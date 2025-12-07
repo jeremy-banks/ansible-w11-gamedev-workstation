@@ -131,6 +131,7 @@
   win_chocolatey:
     name: wsl2
     state: present
+  register: wsl2_result 
 
 - name: reboot
   win_reboot:
