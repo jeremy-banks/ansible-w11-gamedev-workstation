@@ -1,18 +1,20 @@
 ---
-- name: Test connectivity
+- name: test connectivity
   win_ping:
 
-- name: Ensure Chocolatey is installed
+- name: install windows updates
+  ansible.windows.win_updates:
+    reboot: true
+
+- name: ensure chocolatey is installed
   chocolatey.chocolatey.win_chocolatey:
     name:
       - chocolatey
-      # - git
     state: present
 
-- name: Scheduled Task to Kill Unwanted Processes Loop
+- name: schedule task - kill unwanted processes loop
   community.windows.win_scheduled_task:
     name: KillUnwantedProcessesLoop
-    # description: Kill msedge/searchhost/gameassist/gamebar
     actions:
       - path: powershell.exe
         arguments: >
@@ -25,22 +27,71 @@
     state: present
     enabled: yes
 
-# - name: Install Unity Hub
-#   win_chocolatey:
-#     name: unity-hub
-#     state: present
+- name: install geforce-game-ready-driver
+  win_chocolatey:
+    name: nvidia-display-driver
+    version: 581.80.0
+    state: present
+    # force: true
+    params:
+      '/NVApp /NoAudio /NoUSBC'
+      # '/NoAudio /NoUSBC'
 
-# - name: Install VSCode
-#   win_chocolatey:
-#     name:
-#       - vscode
-#     state: present
-  
-# - name: Install Visual Studio Community 2022
-#   win_chocolatey:
-#     name: visualstudio2022community
-#     # package_params: >
-#     #   --add Microsoft.VisualStudio.Workload.ManagedGame
-#     #   --add Microsoft.VisualStudio.Workload.NativeGame
-#     #   --add Microsoft.VisualStudio.Workload.NetWeb
-#     state: present
+- name: install firefox
+  block:
+
+  - name: install firefox
+    win_chocolatey:
+      name: firefox
+      state: present
+      params:
+        '/NoDesktopShortcut'
+
+  - name: create firefox extension dir
+    ansible.windows.win_file:
+      path: "C:/ProgramData/Mozilla/Extensions"
+      state: directory
+
+  - name: install ublock origin extension
+    ansible.windows.win_get_url:
+      url: "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
+      dest: "C:/ProgramData/Mozilla/Extensions/ublock_origin.xpi"
+
+- name: install blender
+  win_chocolatey:
+    name: blender
+    version: 5.0.0
+    state: present
+
+- name: install audacity
+  win_chocolatey:
+    name: audacity
+    version: 3.7.6
+    state: present
+
+- name: install unity hub
+  win_chocolatey:
+    name: unity-hub
+    state: present
+
+- name: install visual studio community 2022
+  win_chocolatey:
+    name: visualstudio2022community
+    package_params: >
+      --add Microsoft.VisualStudio.Workload.ManagedGame
+      --add Microsoft.VisualStudio.Workload.NativeGame
+      --add Microsoft.VisualStudio.Workload.NetWeb
+    state: present
+
+- name: install wsl2
+  win_chocolatey:
+    name: wsl2
+    state: present
+
+- name: reboot
+  win_reboot:
+
+- name: install ubuntu wsl
+  win_chocolatey:
+    name: wsl-ubuntu-2004
+    state: present
