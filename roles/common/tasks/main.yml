@@ -4,6 +4,7 @@
 
 - name: install windows updates
   ansible.windows.win_updates:
+    category_names: '*'
     reboot: true
 
 - name: set windows system ui to dark mode
@@ -63,7 +64,7 @@
 
   - name: ensure firefox distribution folder exists
     win_file:
-      path: "C:\\Program Files\\Mozilla Firefox\\distribution"
+      path: C:\Program Files\Mozilla Firefox\distribution
       state: directory
 
   - name: deploy policies.json
