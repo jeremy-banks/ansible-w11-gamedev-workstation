@@ -1,0 +1,27 @@
+---
+- name: Test connectivity
+  win_ping:
+
+# - name: Ensure Chocolatey is installed
+#   win_chocolatey:
+#     state: present
+
+# - name: Install Unity Hub
+#   win_chocolatey:
+#     name: unity-hub
+#     state: present
+
+# - name: Install VSCode
+#   win_chocolatey:
+#     name:
+#       - vscode
+#     state: present
+  
+# - name: Install Visual Studio Community 2022
+#   win_chocolatey:
+#     name: visualstudio2022community
+#     # package_params: >
+#     #   --add Microsoft.VisualStudio.Workload.ManagedGame
+#     #   --add Microsoft.VisualStudio.Workload.NativeGame
+#     #   --add Microsoft.VisualStudio.Workload.NetWeb
+#     state: present
