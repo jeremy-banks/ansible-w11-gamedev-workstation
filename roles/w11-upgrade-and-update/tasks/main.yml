@@ -17,7 +17,7 @@
   ansible.windows.win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
     name: TargetReleaseVersionInfo
-    data: '{{ desired_w11_hotfix }}'
+    data: '{{ desired_w11_hotfix_version }}'
     type: string
 
 - name: install upgrades and updates
