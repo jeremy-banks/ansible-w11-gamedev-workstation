@@ -26,9 +26,7 @@
     name: KillUnwantedProcessesLoop
     actions:
       - path: powershell.exe
-        arguments: >
-          -NoProfile -WindowStyle Hidden -Command
-          "while ($true) { 'msedge','searchhost','gameassist','gamebar' | % { Get-Process -Name $_ -ErrorAction SilentlyContinue | Stop-Process -Force }; Start-Sleep 1 }"
+        arguments: -NoProfile -WindowStyle Hidden -Command "while ($true) { 'msedge','searchhost','gameassist','gamebar' | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue | Stop-Process -Force }; Start-Sleep -Seconds 1 }"
     triggers:
       - type: boot
     username: SYSTEM
