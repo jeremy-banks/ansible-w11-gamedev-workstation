@@ -25,5 +25,5 @@ Set-Item - Path "WSMan:\localhost\Service\AllowUnencrypted" -Value $true
 
 ## Running Playbook
 ```
-ansible-playbook site.yml
+ansible-playbook w11.yml
 ```

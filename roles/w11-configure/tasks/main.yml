@@ -1,0 +1,27 @@
+---
+- name: set windows system ui to dark mode
+  win_regedit:
+    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+    name: "SystemUsesLightTheme"
+    data: 0
+    type: dword
+
+- name: set windows apps to dark mode
+  win_regedit:
+    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+    name: "AppsUseLightTheme"
+    data: 0
+    type: dword
+
+- name: schedule task - kill unwanted processes loop
+  community.windows.win_scheduled_task:
+    name: KillUnwantedProcessesLoop
+    actions:
+      - path: powershell.exe
+        arguments: -NoProfile -WindowStyle Hidden -Command "while ($true) { 'msedge','searchhost','gameassist','gamebar' | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue | Stop-Process -Force }; Start-Sleep -Seconds 1 }"
+    triggers:
+      - type: boot
+    username: SYSTEM
+    run_level: highest
+    state: present
+    enabled: yes
