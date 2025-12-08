@@ -2,6 +2,34 @@
 
 ## Prerequisites
 
+### Install Windows 11
+- Install Windows 11
+- Load RAID and LAN drivers
+- Activate Windows 11 with Key
+- Sign into Microsoft Account
+- Create new admin user to run ansible
+```
+$password = Read-Host -AsSecureString `
+    "yourPassword"; `
+New-LocalUser -Name "medes" `
+    -Password $password; `
+Add-LocalGroupMember -Group "Administrators" `
+    -Member "medes"
+```
+
+Switch from Public network to Private
+
+Enable winrm
+```
+winrm quickconfig
+Enable-PSRemoting -Force
+winrm set winrm/config/service/auth '@{Basic="true"}'
+winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+winrm quickconfig -transport:http
+```
+
+## Running Playbook
+
 ### Localhost Config
 
 ```sh
@@ -14,16 +42,6 @@ echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc
 Get the windows private ip and update hosts file with it
 
 ### Remote Host Config
-
-Enable winrm
-```
-winrm quickconfig
-Enable-PSRemoting -Force
-Set-Item - Path "WSMan:\localhost\Service\Auth\Basic" -Value $true
-Set-Item - Path "WSMan:\localhost\Service\AllowUnencrypted" -Value $true
-```
-
-## Running Playbook
 ```
 ansible-playbook w11.yml
 ```

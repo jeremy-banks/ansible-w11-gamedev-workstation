@@ -25,3 +25,122 @@
     run_level: highest
     state: present
     enabled: yes
+
+- name: disable location services completely
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration
+    name: Status
+    data: 0
+    datatype: dword
+    state: present
+
+- name: disable location and sensor permissions globally
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
+    name: DisableLocation
+    data: 1
+    datatype: dword
+    state: present
+
+- name: disable location scripting for apps
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
+    name: Value
+    data: Deny
+    datatype: string
+
+- name: uninstall copilot app (windows 11 24h2+)
+  win_shell: Get-AppxPackage *Microsoft.Windows.Copilot* -AllUsers | Remove-AppxPackage -AllUsers
+  ignore_errors: yes
+
+- name: prevent copilot from being reinstalled
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot
+    name: TurnOffWindowsCopilot
+    data: 1
+    datatype: dword
+    state: present
+
+- name: set telemetry to 0 (security-only)
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+    name: AllowTelemetry
+    data: 0
+    datatype: dword
+    state: present
+
+- name: disable diagnostic data service (diagtrack)
+  win_service:
+    name: DiagTrack
+    state: stopped
+    start_mode: disabled
+
+# - name: disable delivery optimization (dosvc)
+#   win_service:
+#     name: DoSvc
+#     state: stopped
+#     start_mode: disabled
+
+- name: disable windows error reporting
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting
+    name: Disabled
+    data: 1
+    datatype: dword
+    state: present
+
+- name: disable customer experience improvement program
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\SQMClient\Windows
+    name: CEIPEnable
+    data: 0
+    datatype: dword
+    state: present
+
+- name: disable advertising id
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo
+    name: DisabledByGroupPolicy
+    data: 1
+    datatype: dword
+    state: present
+
+- name: disable activity feed and timeline upload
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: UploadUserActivities
+    data: 0
+    datatype: dword
+    state: present
+
+- name: disable feedback frequency prompts
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+    name: DoNotShowFeedbackNotifications
+    data: 1
+    datatype: dword
+    state: present
+
+- name: disable onedrive sync and telemetry
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive
+    name: DisableFileSyncNGSC
+    data: 1
+    datatype: dword
+    state: present
+
+- name: disable web search and bing in start menu
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+    name: ConnectedSearchUseWeb
+    data: 0
+    datatype: dword
+    state: present
+
+- name: disable cortana completely
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+    name: AllowCortana
+    data: 0
+    datatype: dword
+    state: present
