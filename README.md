@@ -1,20 +1,28 @@
 # w11-gamedev-workstation-ansible
 
-## Prerequisites
+Steps to create and maintain a Windows 11 Home gaming and game development machine.
 
-### Install Windows 11
+## Update BIOS
+
+## Install Windows 11
+
+#### Create ISO
+Using a Windows OS and the Windows Media Creation Tool, create a USB bootable Windows installer.
+
+https://www.microsoft.com/en-us/software-download/windows11
+https://support.microsoft.com/en-us/windows/create-installation-media-for-windows-99a58364-8c02-206f-aa6f-40c3b507420d
+
+Also copy over any drivers needed (LAN, RAID, etc)
+
+#### Install
 - Install Windows 11
-- Load RAID and LAN drivers
 - Activate Windows 11 with Key
 - Sign into Microsoft Account
 - Create new admin user to run ansible
 ```
-$password = Read-Host -AsSecureString `
-    "yourPassword"; `
-New-LocalUser -Name "medes" `
-    -Password $password; `
-Add-LocalGroupMember -Group "Administrators" `
-    -Member "medes"
+New-LocalUser -Name "NewAdmin" -Password (Read-Host -AsSecureString)
+Add-LocalGroupMember -Group "Administrators" -Member "NewAdmin"
+
 ```
 
 Switch from Public network to Private
@@ -28,9 +36,9 @@ winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm quickconfig -transport:http
 ```
 
-## Running Playbook
+## Run Ansible Playbook
 
-### Localhost Config
+#### Localhost Config
 
 ```sh
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
@@ -38,10 +46,10 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc
 ```
 
-### Update hosts
+#### Update hosts
 Get the windows private ip and update hosts file with it
 
-### Remote Host Config
+#### Remote Host Config
 ```
 ansible-playbook w11.yml
 ```

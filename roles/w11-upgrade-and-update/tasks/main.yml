@@ -1,26 +1,26 @@
 ---
 - name: allow windows feature updates
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
     name: ProductVersion
     data: Windows 11
     type: string
 
 - name: specify target release version
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
     name: TargetReleaseVersion
     data: 1
     type: dword
 
 - name: specify target release version info
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
     name: TargetReleaseVersionInfo
     data: '{{ desired_w11_hotfix_version }}'
     type: string
 
 - name: install upgrades and updates
-  ansible.windows.win_updates:
+  win_updates:
     category_names: ["*"]
     reboot: true

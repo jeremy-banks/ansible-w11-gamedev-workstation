@@ -1,0 +1,23 @@
+{
+    "policies": {
+        "SearchEngines": {
+            "Default": "DuckDuckGo"
+        },
+        "Bookmarks": [
+            {
+            "Title": "Grok",
+            "URL": "https://grok.com"
+            },
+            {
+            "Title": "ChatGPT",
+            "URL": "https://chat.openai.com"
+            }
+        ],
+        "Extensions": {
+            "Install": [
+            "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
+            ],
+            "Locked": ["ublock-origin@raymondhill.net"]
+        }
+    }
+}
