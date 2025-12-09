@@ -2,6 +2,6 @@
 - hosts: all
   roles:
     # - w11-test-connectivity #only needed for troubleshooting
-    # - w11-upgrade-and-update
+    - w11-upgrade-and-update
     - w11-configure
-    # - w11-install-software
+    - w11-install-software
