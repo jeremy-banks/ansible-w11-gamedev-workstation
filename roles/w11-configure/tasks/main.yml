@@ -1,19 +1,57 @@
 ---
-- name: set windows system ui to dark mode
+#confirmed
+- name: dark theme for system
   win_regedit:
     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
     name: "SystemUsesLightTheme"
     data: 0
     type: dword
 
-- name: set windows apps to dark mode
+#confirmed
+- name: dark theme for apps
   win_regedit:
     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
     name: "AppsUseLightTheme"
     data: 0
     type: dword
 
-- name: set allow telemetry to 0 (policy)
+#confirmed
+- name: desktop hide icons
+  win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: HideIcons
+    data: 1
+    datatype: dword
+    state: present
+
+#confirmed
+- name: disable wallpaper
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: Wallpaper
+    data: ""
+    type: string
+    state: present
+
+#confirmed
+- name: disable wallpaper style
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: WallpaperStyle
+    data: "0"
+    type: string
+    state: present
+
+#confirmed
+- name: black desktop background
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\Colors
+    name: Background
+    data: "0 0 0"
+    type: string
+    state: present
+
+- name: deny telemetry (policy)
   win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
     name: AllowTelemetry
@@ -21,7 +59,7 @@
     data: 0
     state: present
 
-- name: set allow telemetry to 0 (current version path)
+- name: deny telemetry (current version path)
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
     name: AllowTelemetry
@@ -29,25 +67,25 @@
     data: 0
     state: present
 
-- name: disable feedback notifications
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-    name: DoNotShowFeedbackNotifications
-    type: dword
-    data: 1
-    state: present
+# - name: do not show feedback notifications
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+#     name: DoNotShowFeedbackNotifications
+#     type: dword
+#     data: 1
+#     state: present
 
-- name: disable DiagTrack
+- name: disable diagtrack
   win_service:
     name: DiagTrack
     state: stopped
     start_mode: disabled
 
-- name: disable dmwappushservice
-  win_service:
-    name: dmwappushservice
-    state: stopped
-    start_mode: disabled
+# - name: disable dmwappushservice
+#   win_service:
+#     name: dmwappushservice
+#     state: stopped
+#     start_mode: disabled
 
 # - name: disable consumer features
 #   win_regedit:
@@ -56,37 +94,43 @@
 #     type: dword
 #     data: 1
 
-- name: disable windows consumer features
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
-    name: DisableWindowsConsumerFeatures
-    type: dword
-    data: 1
+# - name: disable windows consumer features
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+#     name: DisableWindowsConsumerFeatures
+#     type: dword
+#     data: 1
 
-- name: turn off windows copilot
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
-    name: TurnOffWindowsCopilot
-    data: 1
-    datatype: dword
-    state: present
+# - name: turn off windows copilot
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
+#     name: TurnOffWindowsCopilot
+#     data: 1
+#     datatype: dword
+#     state: present
 
-- name: deny cortana
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
-    name: AllowCortana
-    data: 0
-    datatype: dword
-    state: present
+# - name: uninstall windows copilot
+#   win_shell: |
+#     Get-AppxPackage *Microsoft.Windows.Copilot* -AllUsers | Remove-AppxPackage -AllUsers
 
-- name: turn off location services
+# - name: deny cortana
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+#     name: AllowCortana
+#     data: 0
+#     datatype: dword
+#     state: present
+
+#confirmed
+- name: deny location
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
     name: Value
     data: Deny
     datatype: string
 
-- name: disable location services
+#confirmed
+- name: disable location
   win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
     name: DisableLocation
@@ -94,23 +138,24 @@
     data: 1
     state: present
 
-- name: hide all desktop icons
-  win_regedit:
-    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
-    name: HideIcons
-    data: 1
-    datatype: dword
-    state: present
+#confirmed
+- name: copy terminate_spyware.ps1
+  win_copy:
+    src: files/terminate_spyware.ps1
+    dest: 'C:\Windows\terminate_spyware.ps1'
 
-# - name: schedule task - kill unwanted processes loop
-#   community.windows.win_scheduled_task:
-#     name: KillUnwantedProcessesLoop
-#     actions:
-#       - path: powershell.exe
-#         arguments: -NoProfile -WindowStyle Hidden -Command "while ($true) { 'msedge','searchhost','gameassist','gamebar' | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue | Stop-Process -Force }; Start-Sleep -Seconds 1 }"
-#     triggers:
-#       - type: boot
-#     username: SYSTEM
-#     run_level: highest
-#     state: present
-#     enabled: yes
+#confirmed
+- name: schedule terminate_spyware.ps1
+  win_scheduled_task:
+    name: "terminate_spyware.ps1"
+    description: "runs terminate_spyware.ps1 at every system startup"
+    actions:
+      - path: powershell.exe
+        arguments: "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Windows\\terminate_spyware.ps1"
+    triggers:
+      - type: boot
+    username: "SYSTEM"
+    run_level: highest
+    logon_type: service_account
+    state: present
+    enabled: yes
