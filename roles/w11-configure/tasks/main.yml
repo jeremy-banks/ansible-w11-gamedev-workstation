@@ -1,198 +1,216 @@
----
-#confirmed
-- name: dark theme for system
-  win_regedit:
-    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
-    name: "SystemUsesLightTheme"
-    data: 0
-    type: dword
-
-#confirmed
-- name: dark theme for apps
-  win_regedit:
-    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
-    name: "AppsUseLightTheme"
-    data: 0
-    type: dword
-
-#confirmed
-- name: desktop hide icons
-  win_regedit:
-    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
-    name: HideIcons
-    data: 1
-    datatype: dword
-    state: present
-
-#confirmed
-- name: disable wallpaper
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: Wallpaper
-    data: ""
-    type: string
-    state: present
-
-#confirmed
-- name: disable wallpaper style
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: WallpaperStyle
-    data: "0"
-    type: string
-    state: present
-
-#confirmed
-- name: black desktop background
-  win_regedit:
-    path: HKCU:\Control Panel\Colors
-    name: Background
-    data: "0 0 0"
-    type: string
-    state: present
+# ---
+# #confirmed
+# - name: dark theme for system
+#   win_regedit:
+#     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+#     name: "SystemUsesLightTheme"
+#     data: 0
+#     type: dword
 
 # #confirmed
-- name: autohide start menu
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
-    name: Settings
-    type: binary
-    data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
-
-# # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
-# # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
-# # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
-# - name: get current settings binary
-#   ansible.windows.win_shell: |
-#     $val = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3" -Name Settings).Settings
-#     -join ($val | ForEach-Object { "{0:X2}" -f $_ })
-#   register: current_stuckrects3
-
-# - name: show current settings
-#   debug:
-#     var: current_stuckrects3.stdout
-
-#confirmed
-- name: disable start menu search box
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
-    name: SearchboxTaskbarMode
-    type: dword
-    data: 0
-
-# - name: deny telemetry (policy)
+# - name: dark theme for apps
 #   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-#     name: AllowTelemetry
-#     type: dword
+#     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+#     name: "AppsUseLightTheme"
 #     data: 0
-#     state: present
-
-# - name: deny telemetry (current version path)
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
-#     name: AllowTelemetry
 #     type: dword
-#     data: 0
-#     state: present
 
-# - name: do not show feedback notifications
+# #confirmed
+# - name: desktop hide icons
 #   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-#     name: DoNotShowFeedbackNotifications
-#     type: dword
+#     path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+#     name: HideIcons
 #     data: 1
-#     state: present
-
-- name: disable diagtrack
-  win_service:
-    name: DiagTrack
-    state: stopped
-    start_mode: disabled
-
-# - name: disable dmwappushservice
-#   win_service:
-#     name: dmwappushservice
-#     state: stopped
-#     start_mode: disabled
-
-# - name: disable consumer features
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
-#     name: DisableConsumerFeatures
-#     type: dword
-#     data: 1
-
-# - name: disable windows consumer features
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
-#     name: DisableWindowsConsumerFeatures
-#     type: dword
-#     data: 1
-
-#confirmed
-- name: turn off windows copilot
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
-    name: TurnOffWindowsCopilot
-    data: 1
-    datatype: dword
-    state: present
-
-# - name: deny cortana
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
-#     name: AllowCortana
-#     data: 0
 #     datatype: dword
 #     state: present
 
-#confirmed
-- name: deny location
-  win_regedit:
-    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
-    name: Value
-    data: Deny
-    datatype: string
+# #confirmed
+# - name: disable wallpaper
+#   win_regedit:
+#     path: HKCU:\Control Panel\Desktop
+#     name: Wallpaper
+#     data: ""
+#     type: string
+#     state: present
 
-#confirmed
-- name: disable location
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
-    name: DisableLocation
-    type: dword
-    data: 1
-    state: present
+# #confirmed
+# - name: disable wallpaper style
+#   win_regedit:
+#     path: HKCU:\Control Panel\Desktop
+#     name: WallpaperStyle
+#     data: "0"
+#     type: string
+#     state: present
+
+# #confirmed
+# - name: black desktop background
+#   win_regedit:
+#     path: HKCU:\Control Panel\Colors
+#     name: Background
+#     data: "0 0 0"
+#     type: string
+#     state: present
+
+# # #confirmed
+# - name: autohide start menu
+#   win_regedit:
+#     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
+#     name: Settings
+#     type: binary
+#     data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
+
+# # # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
+# # # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# # # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# # - name: get current settings binary
+# #   ansible.windows.win_shell: |
+# #     $val = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3" -Name Settings).Settings
+# #     -join ($val | ForEach-Object { "{0:X2}" -f $_ })
+# #   register: current_stuckrects3
+
+# # - name: show current settings
+# #   debug:
+# #     var: current_stuckrects3.stdout
+
+# #confirmed
+# - name: disable start menu search box
+#   win_regedit:
+#     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+#     name: SearchboxTaskbarMode
+#     type: dword
+#     data: 0
+
+# # - name: deny telemetry (policy)
+# #   win_regedit:
+# #     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+# #     name: AllowTelemetry
+# #     type: dword
+# #     data: 0
+# #     state: present
+
+# # - name: deny telemetry (current version path)
+# #   win_regedit:
+# #     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
+# #     name: AllowTelemetry
+# #     type: dword
+# #     data: 0
+# #     state: present
+
+# # - name: do not show feedback notifications
+# #   win_regedit:
+# #     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+# #     name: DoNotShowFeedbackNotifications
+# #     type: dword
+# #     data: 1
+# #     state: present
+
+# - name: disable diagtrack
+#   win_service:
+#     name: DiagTrack
+#     state: stopped
+#     start_mode: disabled
+
+# # - name: disable dmwappushservice
+# #   win_service:
+# #     name: dmwappushservice
+# #     state: stopped
+# #     start_mode: disabled
+
+# # - name: disable consumer features
+# #   win_regedit:
+# #     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+# #     name: DisableConsumerFeatures
+# #     type: dword
+# #     data: 1
+
+# # - name: disable windows consumer features
+# #   win_regedit:
+# #     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+# #     name: DisableWindowsConsumerFeatures
+# #     type: dword
+# #     data: 1
+
+# #confirmed
+# - name: turn off windows copilot
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
+#     name: TurnOffWindowsCopilot
+#     data: 1
+#     datatype: dword
+#     state: present
+
+# # - name: deny cortana
+# #   win_regedit:
+# #     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+# #     name: AllowCortana
+# #     data: 0
+# #     datatype: dword
+# #     state: present
+
+# #confirmed
+# - name: deny location
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
+#     name: Value
+#     data: Deny
+#     datatype: string
+
+# #confirmed
+# - name: disable location
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
+#     name: DisableLocation
+#     type: dword
+#     data: 1
+#     state: present
+
+# #confirmed
+# - name: uninstall bloatware
+#   win_shell: |
+#     Get-AppxPackage *{{ item }}* -AllUsers | Remove-AppxPackage -AllUsers
+#   loop:
+#     - "Clipchamp.Clipchamp"
+#     - "Microsoft.BingNews"
+#     - "Microsoft.BingSearch"
+#     - "Microsoft.BingWeather"
+#     - "Microsoft.Copilot"
+#     - "Microsoft.GetHelp"
+#     - "Microsoft.MicrosoftStickyNotes"
+#     - "Microsoft.OutlookForWindows"
+#     - "Microsoft.StickyNotes"
+#     - "Microsoft.Todos"
+#     - "Microsoft.WindowsCamera"
+#     - "Microsoft.WindowsFeedbackHub"
+#     - "Microsoft.YourPhone"
+#     - "Microsoft.ZuneMusic"
+#     - "MicrosoftCorportationII.MicrosoftFamily"
+#     - "MicrosoftCorportationII.QuickAssist"
+#     - "MSTeams"
 
 #confirmed
 - name: uninstall bloatware
   win_shell: |
-    Get-AppxPackage *{{ item }}* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ "{{ item }}" | Remove-ProvisionedAppPackage -Online
   loop:
-    - "Clipchamp.Clipchamp"
-    - "Microsoft.BingNews"
-    - "Microsoft.BingSearch"
-    - "Microsoft.BingWeather"
-    - "Microsoft.Copilot"
-    - "Microsoft.GetHelp"
-    - "Microsoft.MicrosoftStickyNotes"
-    - "Microsoft.OutlookForWindows"
-    - "Microsoft.StickyNotes"
-    - "Microsoft.Todos"
-    - "Microsoft.WindowsCamera"
-    - "Microsoft.WindowsFeedbackHub"
-    - "Microsoft.YourPhone"
-    - "Microsoft.ZuneMusic"
+    - "Microsoft.GamingApp"
+    - "Microsoft.MicrosoftSolitaireCollection"
     - "MicrosoftCorportationII.MicrosoftFamily"
     - "MicrosoftCorportationII.QuickAssist"
-    - "MSTeams"
 
+#confirmed
 - name: uninstall bloatware
   win_shell: |
     dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
   loop:
     - WindowsMediaPlayer
     - Microsoft-RemoteDesktopConnection
+
+- name: uninstall onedrive
+  win_shell: cmd /c "{{ item }} /uninstall"
+  loop:
+    - C:\Windows\System32\OneDriveSetup.exe #32
+    - C:\Windows\SysWOW64\OneDriveSetup.exe #64
+  ignore_errors: yes
 
 # - name: uninstall onedrive (64-bit)
 #   win_shell: '& "$env:SystemRoot\SysWOW64\OneDriveSetup.exe" /uninstall'
