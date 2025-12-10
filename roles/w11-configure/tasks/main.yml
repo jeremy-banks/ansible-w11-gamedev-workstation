@@ -26,7 +26,7 @@
 
 #confirmed
 - name: disable wallpaper
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Control Panel\Desktop
     name: Wallpaper
     data: ""
@@ -35,7 +35,7 @@
 
 #confirmed
 - name: disable wallpaper style
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Control Panel\Desktop
     name: WallpaperStyle
     data: "0"
@@ -44,28 +44,57 @@
 
 #confirmed
 - name: black desktop background
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Control Panel\Colors
     name: Background
     data: "0 0 0"
     type: string
     state: present
 
-- name: deny telemetry (policy)
+# #confirmed
+- name: autohide start menu
   win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-    name: AllowTelemetry
-    type: dword
-    data: 0
-    state: present
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
+    name: Settings
+    type: binary
+    data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
 
-- name: deny telemetry (current version path)
+# # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
+# # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# - name: get current settings binary
+#   ansible.windows.win_shell: |
+#     $val = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3" -Name Settings).Settings
+#     -join ($val | ForEach-Object { "{0:X2}" -f $_ })
+#   register: current_stuckrects3
+
+# - name: show current settings
+#   debug:
+#     var: current_stuckrects3.stdout
+
+#confirmed
+- name: disable start menu search box
   win_regedit:
-    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
-    name: AllowTelemetry
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+    name: SearchboxTaskbarMode
     type: dword
     data: 0
-    state: present
+
+# - name: deny telemetry (policy)
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+#     name: AllowTelemetry
+#     type: dword
+#     data: 0
+#     state: present
+
+# - name: deny telemetry (current version path)
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
+#     name: AllowTelemetry
+#     type: dword
+#     data: 0
+#     state: present
 
 # - name: do not show feedback notifications
 #   win_regedit:
@@ -101,17 +130,14 @@
 #     type: dword
 #     data: 1
 
-# - name: turn off windows copilot
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
-#     name: TurnOffWindowsCopilot
-#     data: 1
-#     datatype: dword
-#     state: present
-
-# - name: uninstall windows copilot
-#   win_shell: |
-#     Get-AppxPackage *Microsoft.Windows.Copilot* -AllUsers | Remove-AppxPackage -AllUsers
+#confirmed
+- name: turn off windows copilot
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
+    name: TurnOffWindowsCopilot
+    data: 1
+    datatype: dword
+    state: present
 
 # - name: deny cortana
 #   win_regedit:
@@ -137,6 +163,39 @@
     type: dword
     data: 1
     state: present
+
+#confirmed
+- name: uninstall bloatware
+  win_shell: |
+    Get-AppxPackage *{{ item }}* -AllUsers | Remove-AppxPackage -AllUsers
+  loop:
+    - "Clipchamp.Clipchamp"
+    - "Microsoft.BingNews"
+    - "Microsoft.BingSearch"
+    - "Microsoft.BingWeather"
+    - "Microsoft.Copilot"
+    - "Microsoft.GetHelp"
+    - "Microsoft.MicrosoftStickyNotes"
+    - "Microsoft.OutlookForWindows"
+    - "Microsoft.StickyNotes"
+    - "Microsoft.Todos"
+    - "Microsoft.WindowsCamera"
+    - "Microsoft.WindowsFeedbackHub"
+    - "Microsoft.YourPhone"
+    - "Microsoft.ZuneMusic"
+    - "MicrosoftCorportationII.MicrosoftFamily"
+    - "MicrosoftCorportationII.QuickAssist"
+    - "MSTeams"
+
+- name: uninstall bloatware
+  win_shell: |
+    dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
+  loop:
+    - WindowsMediaPlayer
+    - Microsoft-RemoteDesktopConnection
+
+# - name: uninstall onedrive (64-bit)
+#   win_shell: '& "$env:SystemRoot\SysWOW64\OneDriveSetup.exe" /uninstall'
 
 #confirmed
 - name: copy terminate_spyware.ps1
