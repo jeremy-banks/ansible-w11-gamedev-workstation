@@ -55,5 +55,14 @@ ansible-playbook w11.yml
 ## Manual Settings
 Perhaps with more time these can be identified:
 
-- Enable HDR
-- Set Display Refresh Rate to 360
+- Adjust Display
+    - Enable HDR
+    - Set Display Refresh Rate to 360
+- Add Firefox Private to Task Bar
+- Configure Steam
+    - Log into Steam
+    - Install Steam games
+- Log into Unity Hub
+- Configure Ubuntu WSL2
+    - Install Git
+    - Add GitHub API key to for git to Ubuntu WSL
