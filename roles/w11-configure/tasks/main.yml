@@ -62,15 +62,6 @@
 # # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
 # # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
 # # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
-# - name: get current settings binary
-#   ansible.windows.win_shell: |
-#     $val = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3" -Name Settings).Settings
-#     -join ($val | ForEach-Object { "{0:X2}" -f $_ })
-#   register: current_stuckrects3
-
-# - name: show current settings
-#   debug:
-#     var: current_stuckrects3.stdout
 
 #confirmed
 - name: disable start menu search box
@@ -163,55 +154,6 @@
     type: dword
     data: 1
     state: present
-
-#confirmed
-- name: uninstall bloatware
-  win_shell: |
-    Get-AppxPackage *{{ item }}* -AllUsers | Remove-AppxPackage -AllUsers
-  loop:
-    - "Clipchamp.Clipchamp"
-    - "Microsoft.BingNews"
-    - "Microsoft.BingSearch"
-    - "Microsoft.BingWeather"
-    - "Microsoft.Copilot"
-    - "Microsoft.GetHelp"
-    - "Microsoft.MicrosoftStickyNotes"
-    - "Microsoft.OutlookForWindows"
-    - "Microsoft.StickyNotes"
-    - "Microsoft.Todos"
-    - "Microsoft.WindowsCamera"
-    - "Microsoft.WindowsFeedbackHub"
-    - "Microsoft.YourPhone"
-    - "Microsoft.ZuneMusic"
-    - "MicrosoftCorportationII.MicrosoftFamily"
-    - "MicrosoftCorportationII.QuickAssist"
-    - "MSTeams"
-
-#confirmed
-- name: uninstall bloatware
-  win_shell: |
-    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ "{{ item }}" | Remove-ProvisionedAppPackage -Online
-  loop:
-    - "Microsoft.GamingApp"
-    - "Microsoft.MicrosoftSolitaireCollection"
-    - "MicrosoftCorportationII.MicrosoftFamily"
-    - "MicrosoftCorportationII.QuickAssist"
-
-#confirmed
-- name: uninstall bloatware
-  win_shell: |
-    dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
-  loop:
-    - WindowsMediaPlayer
-    - Microsoft-RemoteDesktopConnection
-
-#confirmed
-- name: uninstall onedrive
-  win_shell: cmd /c "{{ item }} /uninstall"
-  loop:
-    - C:\Windows\System32\OneDriveSetup.exe #32
-    - C:\Windows\SysWOW64\OneDriveSetup.exe #64
-  ignore_errors: true
 
 #confirmed
 - name: copy terminate_spyware.ps1

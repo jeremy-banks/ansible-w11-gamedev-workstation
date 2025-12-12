@@ -1,5 +1,4 @@
 # ansible-w11-gamedev-workstation
-
 Steps to create and maintain a Windows 11 Home gaming and game development machine.
 
 ## Update BIOS
@@ -52,3 +51,9 @@ Get the windows private ip and update hosts file with it
 ```
 ansible-playbook w11.yml
 ```
+
+## Manual Settings
+Perhaps with more time these can be identified:
+
+- Enable HDR
+- Set Display Refresh Rate to 360
