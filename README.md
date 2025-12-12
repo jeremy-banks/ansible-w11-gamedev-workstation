@@ -1,4 +1,4 @@
-# w11-gamedev-workstation-ansible
+# ansible-w11-gamedev-workstation
 
 Steps to create and maintain a Windows 11 Home gaming and game development machine.
 
@@ -22,7 +22,6 @@ Also copy over any drivers needed (LAN, RAID, etc)
 ```
 New-LocalUser -Name "NewAdmin" -Password (Read-Host -AsSecureString)
 Add-LocalGroupMember -Group "Administrators" -Member "NewAdmin"
-
 ```
 
 Switch from Public network to Private
