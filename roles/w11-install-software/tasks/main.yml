@@ -10,15 +10,13 @@
     name: nvidia-display-driver
     version: '{{ desired_nvda_version }}'
     state: present
-    # force: true
     params:
       '/NVApp /NoAudio /NoUSBC'
-      # '/NoAudio /NoUSBC'
 
 - name: install firefox
   block:
 
-  - name: install package
+  - name: install firefox
     win_chocolatey:
       name: firefox
       state: present
@@ -39,13 +37,11 @@
 - name: install gimp
   win_chocolatey:
     name: gimp
-    # version: '{{ desired_audacity_version }}'
     state: present
 
 - name: install vlc
   win_chocolatey:
     name: vlc
-    # version: '{{ desired_audacity_version }}'
     state: present
 
 - name: install blender
@@ -65,13 +61,18 @@
     name: unity-hub
     state: present
 
+- name: install unity editor
+  win_chocolatey:
+    name: unity
+    version: '{{ item }}'
+    state: present
+  loop: "{{ desired_unity_editor_versions }}"
+
 - name: install visual studio community 2022
   win_chocolatey:
     name: visualstudio2022community
-    # package_params: >
-    #   --add Microsoft.VisualStudio.Workload.ManagedGame
-    #   --add Microsoft.VisualStudio.Workload.NativeGame
-    #   --add Microsoft.VisualStudio.Workload.NetWeb
+    package_params: >
+      --add Microsoft.VisualStudio.Workload.ManagedGame
     state: present
 
 - name: install wsl2

@@ -211,7 +211,7 @@
   loop:
     - C:\Windows\System32\OneDriveSetup.exe #32
     - C:\Windows\SysWOW64\OneDriveSetup.exe #64
-  ignore_errors: yes
+  ignore_errors: true
 
 #confirmed
 - name: copy terminate_spyware.ps1
