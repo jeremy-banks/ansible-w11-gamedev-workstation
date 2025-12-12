@@ -1,0 +1,5 @@
+desired_w11_hotfix_version: 25H2
+desired_nvda_version: 581.80.0
+desired_blender_version: 5.0.0
+desired_audacity_version: 3.7.6
+desired_unity_editor_versions: ['6000.2.15']

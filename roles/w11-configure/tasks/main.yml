@@ -1,0 +1,178 @@
+---
+#confirmed
+- name: dark theme for system
+  win_regedit:
+    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+    name: "SystemUsesLightTheme"
+    data: 0
+    type: dword
+
+#confirmed
+- name: dark theme for apps
+  win_regedit:
+    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+    name: "AppsUseLightTheme"
+    data: 0
+    type: dword
+
+#confirmed
+- name: desktop hide icons
+  win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: HideIcons
+    data: 1
+    datatype: dword
+    state: present
+
+#confirmed
+- name: disable wallpaper
+  win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: Wallpaper
+    data: ""
+    type: string
+    state: present
+
+#confirmed
+- name: disable wallpaper style
+  win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: WallpaperStyle
+    data: "0"
+    type: string
+    state: present
+
+#confirmed
+- name: black desktop background
+  win_regedit:
+    path: HKCU:\Control Panel\Colors
+    name: Background
+    data: "0 0 0"
+    type: string
+    state: present
+
+# #confirmed
+- name: autohide start menu
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
+    name: Settings
+    type: binary
+    data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
+
+# # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
+# # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+
+#confirmed
+- name: disable start menu search box
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+    name: SearchboxTaskbarMode
+    type: dword
+    data: 0
+
+# - name: deny telemetry (policy)
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+#     name: AllowTelemetry
+#     type: dword
+#     data: 0
+#     state: present
+
+# - name: deny telemetry (current version path)
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
+#     name: AllowTelemetry
+#     type: dword
+#     data: 0
+#     state: present
+
+# - name: do not show feedback notifications
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+#     name: DoNotShowFeedbackNotifications
+#     type: dword
+#     data: 1
+#     state: present
+
+- name: disable diagtrack
+  win_service:
+    name: DiagTrack
+    state: stopped
+    start_mode: disabled
+
+# - name: disable dmwappushservice
+#   win_service:
+#     name: dmwappushservice
+#     state: stopped
+#     start_mode: disabled
+
+# - name: disable consumer features
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+#     name: DisableConsumerFeatures
+#     type: dword
+#     data: 1
+
+# - name: disable windows consumer features
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+#     name: DisableWindowsConsumerFeatures
+#     type: dword
+#     data: 1
+
+#confirmed
+- name: turn off windows copilot
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
+    name: TurnOffWindowsCopilot
+    data: 1
+    datatype: dword
+    state: present
+
+# - name: deny cortana
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+#     name: AllowCortana
+#     data: 0
+#     datatype: dword
+#     state: present
+
+#confirmed
+- name: deny location
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
+    name: Value
+    data: Deny
+    datatype: string
+
+#confirmed
+- name: disable location
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
+    name: DisableLocation
+    type: dword
+    data: 1
+    state: present
+
+#confirmed
+- name: copy terminate_spyware.ps1
+  win_copy:
+    src: files/terminate_spyware.ps1
+    dest: 'C:\Windows\terminate_spyware.ps1'
+
+#confirmed
+- name: schedule terminate_spyware.ps1
+  win_scheduled_task:
+    name: "terminate_spyware.ps1"
+    description: "runs terminate_spyware.ps1 at every system startup"
+    actions:
+      - path: powershell.exe
+        arguments: "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Windows\\terminate_spyware.ps1"
+    triggers:
+      - type: boot
+    username: "SYSTEM"
+    run_level: highest
+    logon_type: service_account
+    state: present
+    enabled: yes
