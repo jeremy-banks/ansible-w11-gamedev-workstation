@@ -16,13 +16,13 @@
     type: dword
 
 #confirmed
-- name: desktop hide icons
-  win_regedit:
-    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
-    name: HideIcons
-    data: 1
-    datatype: dword
-    state: present
+# - name: desktop hide icons
+#   win_regedit:
+#     path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+#     name: HideIcons
+#     data: 1
+#     datatype: dword
+#     state: present
 
 #confirmed
 - name: disable wallpaper
@@ -51,7 +51,24 @@
     type: string
     state: present
 
-# #confirmed
+#confirmed
+- name: delete desktop items
+  win_shell: |
+    Remove-Item -Path "{{ item }}" -Force -Recurse
+  loop:
+    - C:\Users\Public\Desktop\*
+    - $HOME\Desktop\*
+
+#confirmed
+- name: hide recycle bin from desktop
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
+    name: "{645FF040-5081-101B-9F08-00AA002F954E}"
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
 - name: autohide start menu
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
@@ -59,9 +76,9 @@
     type: binary
     data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
 
-# # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
-# # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
-# # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
+# new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+# pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
 
 #confirmed
 - name: disable start menu search box
@@ -70,6 +87,45 @@
     name: SearchboxTaskbarMode
     type: dword
     data: 0
+
+#confirmed
+- name: disable windows search service
+  win_service:
+    name: WSearch
+    state: stopped
+    start_mode: disabled
+
+#confirmed
+- name: disable search highlights
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+    name: BingSearchEnabled
+    data: 0
+    type: dword
+
+#confirmed
+- name: disable search history
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
+    name: IsDeviceSearchHistoryEnabled
+    data: 0
+    type: dword
+
+#confirmed
+- name: disable microsoft account search
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
+    name: IsMSACloudSearchEnabled
+    data: 0
+    type: dword
+
+#confirmed
+- name: disable work or school account search
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
+    name: IsAADCloudSearchEnabled
+    data: 0
+    type: dword
 
 # - name: deny telemetry (policy)
 #   win_regedit:
@@ -154,6 +210,54 @@
     type: dword
     data: 1
     state: present
+
+#confirmed
+- name: disable geolocation service
+  win_service:
+    name: lfsvc
+    state: stopped
+    start_mode: disabled
+
+#confirmed
+- name: disable windows health and optimized experiences service
+  win_service:
+    name: whesvc
+    state: stopped
+    start_mode: disabled
+
+#confirmed
+- name: disable msedge services
+  win_service:
+    name: "{{ item }}"
+    state: stopped
+    start_mode: disabled
+  loop:
+    - edgeupdate
+    - edgeupdatem
+    - MicrosoftEdgeElevationService
+
+#confirmed
+- name: disable snap windows
+  win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: WindowArrangementActive
+    data: "0"
+    type: string
+
+#confirmed
+- name: disable widgets
+  win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Dsh
+    name: AllowNewsAndInterests
+    data: 0
+    type: dword
+
+# - name: disable cross-device experiences
+#   win_regedit:
+#     path: HKLM:\Software\Policies\Microsoft\Windows\System
+#     name: EnableCdp
+#     data: 0
+#     type: dword
 
 #confirmed
 - name: copy terminate_spyware.ps1
