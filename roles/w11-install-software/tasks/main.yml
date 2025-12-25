@@ -68,11 +68,9 @@
     state: present
   loop: "{{ desired_unity_editor_versions }}"
 
-- name: install visual studio community 2022
+- name: install vscode
   win_chocolatey:
-    name: visualstudio2022community
-    package_params: >
-      --add Microsoft.VisualStudio.Workload.ManagedGame
+    name: vscode.install
     state: present
 
 - name: install wsl2

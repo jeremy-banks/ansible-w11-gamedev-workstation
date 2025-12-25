@@ -1,7 +1,8 @@
-# ansible-w11-gamedev-workstation
-Steps to create and maintain a Windows 11 Home gaming and game development machine.
+# Ansible Windows 11 Game Development Workstation
+This repo exists to assist me in automating the installation, configuration, and security hardening of a Windows 11 Home gaming and game development PC.
 
 ## Update BIOS
+Generally speaking you should always update your motherboard BIOS when doing a new OS install. Typically this is as simple as download latest from manf website, copy to USB, reboot into BIOS, and update.
 
 ## Install Windows 11
 
@@ -37,7 +38,6 @@ winrm quickconfig -transport:http
 ## Run Ansible Playbook
 
 #### Localhost Config
-
 ```sh
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 # or
