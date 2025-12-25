@@ -9,28 +9,29 @@
     - "Microsoft.BingSearch"
     - "Microsoft.BingWeather"
     - "Microsoft.Copilot"
+    - "Microsoft.Edge.GameAssist"
+    - "Microsoft.GamingApp"
     - "Microsoft.GetHelp"
+    - "Microsoft.MicrosoftSolitaireCollection"
     - "Microsoft.MicrosoftStickyNotes"
     - "Microsoft.OutlookForWindows"
+    - "Microsoft.PowerAutomateDesktop"
     - "Microsoft.StickyNotes"
     - "Microsoft.Todos"
+    - "Microsoft.WidgetsPlatformRuntime"
+    # - "Microsoft.Windows.ParentalControls"
     - "Microsoft.WindowsCamera"
     - "Microsoft.WindowsFeedbackHub"
+    - "Microsoft.Xbox.TCUI"
+    - "Microsoft.XboxGamingOverlay"
+    - "Microsoft.XboxIdentityProvider"
+    - "Microsoft.XboxSpeechToTextOverlay"
     - "Microsoft.YourPhone"
     - "Microsoft.ZuneMusic"
-    - "MicrosoftCorportationII.MicrosoftFamily"
-    - "MicrosoftCorportationII.QuickAssist"
+    # - "MicrosoftCorportationII.MicrosoftFamily"
+    # - "MicrosoftCorportationII.QuickAssist"
+    - "MicrosoftWindows.CrossDevice"
     - "MSTeams"
-
-#confirmed
-- name: uninstall bloatware
-  win_shell: |
-    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ "{{ item }}" | Remove-ProvisionedAppPackage -Online
-  loop:
-    - "Microsoft.GamingApp"
-    - "Microsoft.MicrosoftSolitaireCollection"
-    - "MicrosoftCorportationII.MicrosoftFamily"
-    - "MicrosoftCorportationII.QuickAssist"
 
 #confirmed
 - name: uninstall bloatware
