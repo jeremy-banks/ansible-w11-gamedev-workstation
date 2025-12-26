@@ -2,6 +2,7 @@ desired_w11_hotfix_version: 25H2
 
 software_to_install:
   - audacity
+  - blender
   - dotnetfx
   - firefox
   - gimp
@@ -11,14 +12,6 @@ software_to_install:
   - vlc
   - vscode.install
   - wsl-ubuntu-2004
-
-software_to_install_pinned:
-  blender: 5.0.1
-  # unity: 6000.2.15
-  unity: 6000.2.10
-
-vcsode_extensions_to_remove:
-  - ms-dotnettools.csharp
 
 vcsode_extensions_to_install:
   - VisualStudioToolsForUnity.vstuc

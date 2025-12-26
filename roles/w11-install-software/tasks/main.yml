@@ -5,40 +5,25 @@
     state: latest
     params:
       '/NoAudio /NoUSBC'
-  register: reboot_required
-
-# - name: install nvidia app
-#   win_chocolatey:
-#     name: nvidia-app
-#     state: latest
-
-- name: remove nvidia app
-  win_chocolatey:
-    name: nvidia-app
-    state: absent
+  register: install_nvidia_display_driver
+  until: install_nvidia_display_driver.rc == 0
+  delay: 60
 
 - name: install wsl2
   win_chocolatey:
     name: wsl2
     state: latest
-  register: reboot_required 
+  register: install_wsl2 
 
 - name: reboot
   win_reboot:
-  when: reboot_required.changed
+  when: install_nvidia_display_driver.changed or install_wsl2.changed
 
 - name: install software
   win_chocolatey:
     name: "{{ item }}"
     state: latest
   loop: "{{ software_to_install }}"
-
-- name: install software (pinned)
-  win_chocolatey:
-    name: "{{ item.key }}"
-    version: "{{ item.value }}"
-    state: present
-  loop: "{{ software_to_install_pinned | dict2items }}"
 
 - name: configure firefox
   block:
@@ -53,12 +38,6 @@
       src: policies.json
       dest: "C:\\Program Files\\Mozilla Firefox\\distribution\\policies.json"
       force: yes
-
-- name: uninstall vscode extensions
-  win_command: >
-    "C:\Program Files\Microsoft VS Code\bin\code.cmd" --uninstall-extension {{ item }} --force
-  loop: "{{ vcsode_extensions_to_remove }}"
-  ignore_errors: true
 
 - name: install vscode extensions
   win_command: >

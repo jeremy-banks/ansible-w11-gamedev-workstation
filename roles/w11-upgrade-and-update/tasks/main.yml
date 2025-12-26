@@ -3,3 +3,6 @@
   win_updates:
     category_names: ["*"]
     reboot: true
+  register: install_upgrades_and_updates
+  until: not install_upgrades_and_updates.changed
+  delay: 30

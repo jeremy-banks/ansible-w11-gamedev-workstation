@@ -30,13 +30,12 @@ Switch from Public network to Private
 
 Enable winrm
 ```
-Enable-PSRemoting -Force
 winrm quickconfig -transport:http
 winrm set winrm/config/service/auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 ```
 
-Reboot
+Log out of the user and run this playbook
 
 ## Run Ansible Playbook
 
@@ -58,6 +57,7 @@ ansible-playbook w11.yml
 ## Manual Settings
 Perhaps with more time these can be identified:
 
+- Uninstall NVIDIA App
 - Adjust Display
     - Enable HDR
     - Set Display Refresh Rate to 360
@@ -69,3 +69,5 @@ Perhaps with more time these can be identified:
 - Configure Ubuntu WSL2
     - Install Git
     - Add GitHub API key to for git to Ubuntu WSL
+    - Symlink WSL to desktop
+    - Clone repos
