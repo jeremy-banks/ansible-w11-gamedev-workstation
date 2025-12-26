@@ -1,10 +1,10 @@
-# Ansible Windows 11 Game Development Workstation
+# Ansible Windows 11 Home Game Development Workstation
 This repo exists to assist me in automating the installation, configuration, and security hardening of a Windows 11 Home gaming and game development PC.
 
 ## Update BIOS
 Generally speaking you should always update your motherboard BIOS when doing a new OS install. Typically this is as simple as download latest from manf website, copy to USB, reboot into BIOS, and update.
 
-## Install Windows 11
+## Install Windows 11 Home
 
 #### Create ISO
 Using a Windows OS and the Windows Media Creation Tool, create a USB bootable Windows installer.
@@ -15,14 +15,16 @@ https://support.microsoft.com/en-us/windows/create-installation-media-for-window
 Also copy over any drivers needed (LAN, RAID, etc)
 
 #### Install
-- Install Windows 11
-- Activate Windows 11 with Key
+- Install Windows 11 Home
+- Activate Windows 11 Home with Key
 - Sign into Microsoft Account
 - Create new admin user to run ansible
 ```
 New-LocalUser -Name "NewAdmin" -Password (Read-Host -AsSecureString)
 Add-LocalGroupMember -Group "Administrators" -Member "NewAdmin"
 ```
+
+Log into that newly created user
 
 Switch from Public network to Private
 
@@ -34,6 +36,14 @@ winrm set winrm/config/service/auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm quickconfig -transport:http
 ```
+
+Delete other accounts
+```
+Get-LocalUser
+Remove-LocalUser -Name "name"
+```
+
+Reboot
 
 ## Run Ansible Playbook
 

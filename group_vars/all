@@ -2,6 +2,7 @@ desired_w11_hotfix_version: 25H2
 
 software_to_install:
   - audacity
+  - firefox
   - gimp
   - unity-hub
   - vlc

@@ -1,41 +1,37 @@
 ---
-- name: ensure chocolatey is installed
-  win_chocolatey:
-    name:
-      - chocolatey
-    state: present
-
 - name: install geforce-game-ready-driver
   win_chocolatey:
     name: nvidia-display-driver
-    state: present
+    state: latest
     params:
       '/NoAudio /NoUSBC'
+  register: reboot_required
 
 - name: install wsl2
   win_chocolatey:
     name: wsl2
-    state: present
-  register: wsl2_result 
+    state: latest
+  register: reboot_required 
 
 - name: reboot
   win_reboot:
-  when: wsl2_result.changed
+  when: reboot_required.changed
 
-- name: install ubuntu wsl
+- name: install software
   win_chocolatey:
-    name: wsl-ubuntu-2004
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ software_to_install }}"
+
+- name: install software (pinned)
+  win_chocolatey:
+    name: "{{ item.key }}"
+    version: "{{ item.value }}"
     state: present
+  loop: "{{ software_to_install_pinned | dict2items }}"
 
-- name: install firefox
+- name: configure firefox
   block:
-
-  - name: install firefox
-    win_chocolatey:
-      name: firefox
-      state: present
-      params:
-        '/NoDesktopShortcut'
 
   - name: ensure distribution folder exists
     win_file:
@@ -47,16 +43,3 @@
       src: policies.json
       dest: "C:\\Program Files\\Mozilla Firefox\\distribution\\policies.json"
       force: yes
-
-- name: install software
-  win_chocolatey:
-    name: "{{ item }}"
-    state: upgrade
-  loop: "{{ software_to_install }}"
-
-- name: install software (pinned)
-  win_chocolatey:
-    name: "{{ item.key }}"
-    version: "{{ item.value }}"
-    state: present
-  loop: "{{ software_to_install_pinned | dict2items }}"

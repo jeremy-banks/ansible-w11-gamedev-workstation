@@ -16,15 +16,6 @@
     type: dword
 
 #confirmed
-# - name: desktop hide icons
-#   win_regedit:
-#     path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
-#     name: HideIcons
-#     data: 1
-#     datatype: dword
-#     state: present
-
-#confirmed
 - name: disable wallpaper
   win_regedit:
     path: HKCU:\Control Panel\Desktop
@@ -127,55 +118,11 @@
     data: 0
     type: dword
 
-# - name: deny telemetry (policy)
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-#     name: AllowTelemetry
-#     type: dword
-#     data: 0
-#     state: present
-
-# - name: deny telemetry (current version path)
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
-#     name: AllowTelemetry
-#     type: dword
-#     data: 0
-#     state: present
-
-# - name: do not show feedback notifications
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-#     name: DoNotShowFeedbackNotifications
-#     type: dword
-#     data: 1
-#     state: present
-
 - name: disable diagtrack
   win_service:
     name: DiagTrack
     state: stopped
     start_mode: disabled
-
-# - name: disable dmwappushservice
-#   win_service:
-#     name: dmwappushservice
-#     state: stopped
-#     start_mode: disabled
-
-# - name: disable consumer features
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
-#     name: DisableConsumerFeatures
-#     type: dword
-#     data: 1
-
-# - name: disable windows consumer features
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
-#     name: DisableWindowsConsumerFeatures
-#     type: dword
-#     data: 1
 
 #confirmed
 - name: turn off windows copilot
@@ -185,14 +132,6 @@
     data: 1
     datatype: dword
     state: present
-
-# - name: deny cortana
-#   win_regedit:
-#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
-#     name: AllowCortana
-#     data: 0
-#     datatype: dword
-#     state: present
 
 #confirmed
 - name: deny location
@@ -251,13 +190,6 @@
     name: AllowNewsAndInterests
     data: 0
     type: dword
-
-# - name: disable cross-device experiences
-#   win_regedit:
-#     path: HKLM:\Software\Policies\Microsoft\Windows\System
-#     name: EnableCdp
-#     data: 0
-#     type: dword
 
 #confirmed
 - name: copy terminate_spyware.ps1
