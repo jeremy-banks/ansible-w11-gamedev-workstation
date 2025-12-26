@@ -3,8 +3,3 @@
   win_updates:
     category_names: ["*"]
     reboot: true
-  become: true
-  become_method: runas
-  become_user: "{{ ansible_user }}"
-  register: upgrade_and_updates
-  until: not upgrade_and_updates.changed

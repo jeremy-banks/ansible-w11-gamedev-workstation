@@ -32,9 +32,6 @@
     # - "MicrosoftCorportationII.QuickAssist"
     - "MicrosoftWindows.CrossDevice"
     - "MSTeams"
-  become: true
-  become_method: runas
-  become_user: "{{ ansible_user }}"
 
 #confirmed
 - name: uninstall bloatware
@@ -43,9 +40,6 @@
   loop:
     - WindowsMediaPlayer
     - Microsoft-RemoteDesktopConnection
-  become: true
-  become_method: runas
-  become_user: "{{ ansible_user }}"
 
 #confirmed
 - name: uninstall onedrive
