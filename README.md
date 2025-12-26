@@ -30,11 +30,10 @@ Switch from Public network to Private
 
 Enable winrm
 ```
-winrm quickconfig
 Enable-PSRemoting -Force
+winrm quickconfig -transport:http
 winrm set winrm/config/service/auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
-winrm quickconfig -transport:http
 ```
 
 Reboot

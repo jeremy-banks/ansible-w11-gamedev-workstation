@@ -218,9 +218,9 @@
   win_user:
     name: "{{ item }}"
     state: absent
-  become: true
-  become_method: runas
-  become_user: "{{ ansible_user }}"
+  # become: true
+  # become_method: runas
+  # become_user: "{{ ansible_user }}"
   loop: "{{ users_to_remove }}"
 
 #confirmed
@@ -228,7 +228,7 @@
   win_file:
     path: C:\Users\{{ item }}
     state: absent
-  become: true
-  become_method: runas
-  become_user: "{{ ansible_user }}"
+  # become: true
+  # become_method: runas
+  # become_user: "{{ ansible_user }}"
   loop: "{{ users_to_remove }}"

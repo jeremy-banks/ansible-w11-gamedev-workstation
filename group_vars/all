@@ -6,6 +6,7 @@ software_to_install:
   - firefox
   - gimp
   - steam
+  - unity
   - unity-hub
   - vlc
   - vscode.install
@@ -13,7 +14,8 @@ software_to_install:
 
 software_to_install_pinned:
   blender: 5.0.1
-  unity: 6000.2.15
+  # unity: 6000.2.15
+  unity: 6000.2.10
 
 vcsode_extensions_to_remove:
   - ms-dotnettools.csharp
