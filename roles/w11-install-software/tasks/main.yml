@@ -1,11 +1,21 @@
 ---
-- name: install geforce-game-ready-driver
+- name: install nvidia display driver
   win_chocolatey:
     name: nvidia-display-driver
     state: latest
     params:
       '/NoAudio /NoUSBC'
   register: reboot_required
+
+# - name: install nvidia app
+#   win_chocolatey:
+#     name: nvidia-app
+#     state: latest
+
+- name: remove nvidia app
+  win_chocolatey:
+    name: nvidia-app
+    state: absent
 
 - name: install wsl2
   win_chocolatey:
@@ -43,3 +53,14 @@
       src: policies.json
       dest: "C:\\Program Files\\Mozilla Firefox\\distribution\\policies.json"
       force: yes
+
+- name: uninstall vscode extensions
+  win_command: >
+    "C:\Program Files\Microsoft VS Code\bin\code.cmd" --uninstall-extension {{ item }} --force
+  loop: "{{ vcsode_extensions_to_remove }}"
+  ignore_errors: true
+
+- name: install vscode extensions
+  win_command: >
+    "C:\Program Files\Microsoft VS Code\bin\code.cmd" --install-extension {{ item }} --force
+  loop: "{{ vcsode_extensions_to_install }}"

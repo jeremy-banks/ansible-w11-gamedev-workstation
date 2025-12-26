@@ -37,12 +37,6 @@ winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm quickconfig -transport:http
 ```
 
-Delete other accounts
-```
-Get-LocalUser
-Remove-LocalUser -Name "name"
-```
-
 Reboot
 
 ## Run Ansible Playbook
