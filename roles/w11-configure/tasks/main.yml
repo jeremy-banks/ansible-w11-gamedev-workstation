@@ -59,6 +59,14 @@
     type: dword
     state: present
 
+- name: hide "learn about this picture" shortcut
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
+    name: "{2cc5ca98-6485-489a-920e-b3e88a6ccce3}"
+    type: dword
+    data: 1
+    state: present
+
 #confirmed
 - name: autohide start menu
   win_regedit:
@@ -192,6 +200,14 @@
     type: dword
 
 #confirmed
+- name: delete every scheduled task
+  ansible.windows.win_shell: |
+    Get-ScheduledTask |
+    ForEach-Object {
+      Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath -Confirm:$false
+    }
+
+#confirmed
 - name: copy terminate_spyware.ps1
   win_copy:
     src: files/terminate_spyware.ps1
@@ -206,23 +222,9 @@
       - path: powershell.exe
         arguments: "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Windows\\terminate_spyware.ps1"
     triggers:
-      - type: boot
+      - type: logon
     username: "SYSTEM"
     run_level: highest
     logon_type: service_account
     state: present
     enabled: yes
-
-#confirmed
-- name: remove users
-  win_user:
-    name: "{{ item }}"
-    state: absent
-  loop: "{{ users_to_remove }}"
-
-#confirmed
-- name: remove users profiles
-  win_file:
-    path: C:\Users\{{ item }}
-    state: absent
-  loop: "{{ users_to_remove }}"

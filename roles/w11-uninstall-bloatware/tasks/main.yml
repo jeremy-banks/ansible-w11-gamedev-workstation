@@ -1,8 +1,30 @@
 ---
 #confirmed
+- name: remove users
+  win_user:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ users_to_remove }}"
+
+#confirmed
+- name: remove users profiles
+  win_file:
+    path: C:\Users\{{ item }}
+    state: absent
+  loop: "{{ users_to_remove }}"
+
+#confirmed
+- name: uninstall onedrive
+  win_shell: cmd /c "{{ item }} /uninstall"
+  loop:
+    - C:\Windows\System32\OneDriveSetup.exe #32
+    - C:\Windows\SysWOW64\OneDriveSetup.exe #64
+  ignore_errors: true
+
+#confirmed
 - name: uninstall bloatware
   win_shell: |
-    Get-AppxPackage *{{ item }}* -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxPackage *{{ item }}* | Remove-AppxPackage
   loop:
     - "Clipchamp.Clipchamp"
     - "Microsoft.BingNews"
@@ -19,19 +41,18 @@
     - "Microsoft.StickyNotes"
     - "Microsoft.Todos"
     - "Microsoft.WidgetsPlatformRuntime"
-    # - "Microsoft.Windows.ParentalControls"
     - "Microsoft.WindowsCamera"
     - "Microsoft.WindowsFeedbackHub"
+    - "Microsoft.WindowsSoundRecorder"
     - "Microsoft.Xbox.TCUI"
     - "Microsoft.XboxGamingOverlay"
     - "Microsoft.XboxIdentityProvider"
     - "Microsoft.XboxSpeechToTextOverlay"
     - "Microsoft.YourPhone"
     - "Microsoft.ZuneMusic"
-    # - "MicrosoftCorportationII.MicrosoftFamily"
-    # - "MicrosoftCorportationII.QuickAssist"
     - "MicrosoftWindows.CrossDevice"
     - "MSTeams"
+    - "QuickAssist"
 
 #confirmed
 - name: uninstall bloatware
@@ -40,11 +61,3 @@
   loop:
     - WindowsMediaPlayer
     - Microsoft-RemoteDesktopConnection
-
-#confirmed
-- name: uninstall onedrive
-  win_shell: cmd /c "{{ item }} /uninstall"
-  loop:
-    - C:\Windows\System32\OneDriveSetup.exe #32
-    - C:\Windows\SysWOW64\OneDriveSetup.exe #64
-  ignore_errors: true

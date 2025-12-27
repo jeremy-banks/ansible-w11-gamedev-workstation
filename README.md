@@ -30,9 +30,9 @@ Switch from Public network to Private
 
 Enable winrm
 ```
-winrm quickconfig -transport:http
-winrm set winrm/config/service/auth '@{Basic="true"}'
-winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+Enable-PSRemoting -Force
+Set-Item WSMan:\localhost\Service\Auth\Basic $true
+Set-Item WSMan:\localhost\Service\AllowUnencrypted $true
 ```
 
 Log out of the user and run this playbook
@@ -61,7 +61,10 @@ Perhaps with more time these can be identified:
 - Adjust Display
     - Enable HDR
     - Set Display Refresh Rate to 360
-- Add Firefox Private to Task Bar
+- Task Bar customize
+    - Remove edge
+    - Remove store
+    - add firefox private
 - Configure Steam
     - Log into Steam
     - Install Steam games

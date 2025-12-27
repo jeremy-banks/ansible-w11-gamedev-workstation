@@ -1,29 +1,11 @@
 ---
-- name: install nvidia display driver
-  win_chocolatey:
-    name: nvidia-display-driver
-    state: latest
-    params:
-      '/NoAudio /NoUSBC'
-  register: install_nvidia_display_driver
-  until: install_nvidia_display_driver.rc == 0
-  delay: 60
-
-- name: install wsl2
-  win_chocolatey:
-    name: wsl2
-    state: latest
-  register: install_wsl2 
-
-- name: reboot
-  win_reboot:
-  when: install_nvidia_display_driver.changed or install_wsl2.changed
-
 - name: install software
   win_chocolatey:
-    name: "{{ item }}"
+    name: "{{ software_to_install }}"
     state: latest
-  loop: "{{ software_to_install }}"
+  register: install_software
+  until: install_software.rc == 0
+  delay: 60
 
 - name: configure firefox
   block:
