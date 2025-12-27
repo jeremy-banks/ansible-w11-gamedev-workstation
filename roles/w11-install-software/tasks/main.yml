@@ -1,27 +1,14 @@
 ---
-- name: ensure chocolatey is installed
-  chocolatey.chocolatey.win_chocolatey:
-    name:
-      - chocolatey
-    state: present
-
-- name: install geforce-game-ready-driver
+- name: install software
   win_chocolatey:
-    name: nvidia-display-driver
-    version: '{{ desired_nvda_version }}'
-    state: present
-    params:
-      '/NVApp /NoAudio /NoUSBC'
+    name: "{{ software_to_install }}"
+    state: latest
+  register: install_software
+  until: install_software.rc == 0
+  delay: 60
 
-- name: install firefox
+- name: configure firefox
   block:
-
-  - name: install firefox
-    win_chocolatey:
-      name: firefox
-      state: present
-      params:
-        '/NoDesktopShortcut'
 
   - name: ensure distribution folder exists
     win_file:
@@ -34,56 +21,7 @@
       dest: "C:\\Program Files\\Mozilla Firefox\\distribution\\policies.json"
       force: yes
 
-- name: install gimp
-  win_chocolatey:
-    name: gimp
-    state: present
-
-- name: install vlc
-  win_chocolatey:
-    name: vlc
-    state: present
-
-- name: install blender
-  win_chocolatey:
-    name: blender
-    version: '{{ desired_blender_version }}'
-    state: present
-
-- name: install audacity
-  win_chocolatey:
-    name: audacity
-    version: '{{ desired_audacity_version }}'
-    state: present
-
-- name: install unity hub
-  win_chocolatey:
-    name: unity-hub
-    state: present
-
-- name: install unity editor
-  win_chocolatey:
-    name: unity
-    version: '{{ item }}'
-    state: present
-  loop: "{{ desired_unity_editor_versions }}"
-
-- name: install vscode
-  win_chocolatey:
-    name: vscode.install
-    state: present
-
-- name: install wsl2
-  win_chocolatey:
-    name: wsl2
-    state: present
-  register: wsl2_result 
-
-- name: reboot
-  win_reboot:
-  when: wsl2_result.changed
-
-- name: install ubuntu wsl
-  win_chocolatey:
-    name: wsl-ubuntu-2004
-    state: present
+- name: install vscode extensions
+  win_command: >
+    "C:\Program Files\Microsoft VS Code\bin\code.cmd" --install-extension {{ item }} --force
+  loop: "{{ vcsode_extensions_to_install }}"

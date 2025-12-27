@@ -1,26 +1,32 @@
 ---
-- name: allow windows feature updates
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
-    name: ProductVersion
-    data: Windows 11
-    type: string
-
-- name: specify target release version
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
-    name: TargetReleaseVersion
-    data: 1
-    type: dword
-
-- name: specify target release version info
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
-    name: TargetReleaseVersionInfo
-    data: '{{ desired_w11_hotfix_version }}'
-    type: string
+- name: change power plan to high performance
+  community.windows.win_power_plan:
+    name: high performance
 
 - name: install upgrades and updates
   win_updates:
     category_names: ["*"]
     reboot: true
+  register: install_upgrades_and_updates
+  until: not install_upgrades_and_updates.changed
+  delay: 30
+
+- name: install nvidia display driver
+  win_chocolatey:
+    name: nvidia-display-driver
+    state: latest
+    params:
+      '/NoAudio /NoUSBC'
+  register: install_nvidia_display_driver
+  until: install_nvidia_display_driver.rc == 0
+  delay: 60
+
+- name: install wsl2
+  win_chocolatey:
+    name: wsl2
+    state: latest
+  register: install_wsl2 
+
+- name: reboot
+  win_reboot:
+  when: install_nvidia_display_driver.changed or install_wsl2.changed
