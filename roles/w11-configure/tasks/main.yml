@@ -16,6 +16,24 @@
     type: dword
 
 #confirmed
+- name: disable windows spotlight
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableSpotlightOnDesktop
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: set background type to solid color
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers
+    name: BackgroundType
+    data: 1
+    type: dword
+    state: present              
+
+#confirmed
 - name: disable wallpaper
   win_regedit:
     path: HKCU:\Control Panel\Desktop
@@ -96,7 +114,7 @@
 
 #confirmed
 - name: disable search highlights
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
     name: BingSearchEnabled
     data: 0
@@ -104,7 +122,7 @@
 
 #confirmed
 - name: disable search history
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
     name: IsDeviceSearchHistoryEnabled
     data: 0
@@ -112,7 +130,7 @@
 
 #confirmed
 - name: disable microsoft account search
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
     name: IsMSACloudSearchEnabled
     data: 0
@@ -120,7 +138,7 @@
 
 #confirmed
 - name: disable work or school account search
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
     name: IsAADCloudSearchEnabled
     data: 0
@@ -200,8 +218,89 @@
     type: dword
 
 #confirmed
+- name: disable Game DVR (policy-level)
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR
+    name: AllowGameDVR
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
+- name: disable Game Bar capture for current user
+  win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR
+    name: AppCaptureEnabled
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
+- name: disable Game Bar hotkeys
+  win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\GameBar
+    name: UseNexusForGameBarEnabled
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
+- name: disable notifications
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CurrentVersion\PushNotifications
+    name: NoToastApplicationNotification
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable optional diagnostic data (policy)
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows\DataCollection
+    name: AllowTelemetry
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable inking & typing personalization (text)
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\InputPersonalization
+    name: RestrictImplicitTextCollection
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable inking & typing personalization (ink)
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\InputPersonalization
+    name: RestrictImplicitInkCollection
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable tailored experiences (policy)
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableTailoredExperiencesWithDiagnosticData
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable tailored experiences (user setting)
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
+    name: TailoredExperiencesWithDiagnosticDataEnabled
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
 - name: delete every scheduled task
-  ansible.windows.win_shell: |
+  win_shell: |
     Get-ScheduledTask |
     ForEach-Object {
       Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath -Confirm:$false
