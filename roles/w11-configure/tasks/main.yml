@@ -16,6 +16,42 @@
     type: dword
 
 #confirmed
+- name: disable windows spotlight
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableSpotlightOnDesktop
+    data: 1
+    type: dword
+    state: present
+
+#confirmed - fully disable Windows Spotlight on Desktop
+- name: disable windows spotlight collection on desktop
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableSpotlightCollectionOnDesktop
+    data: 1
+    type: dword
+    state: present
+
+#confirmed - broader disable of Windows consumer experiences (prevents suggested content overrides)
+- name: disable windows consumer features
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableWindowsConsumerFeatures
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: set background type to solid color
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers
+    name: BackgroundType
+    data: 1
+    type: dword
+    state: present              
+
+#confirmed
 - name: disable wallpaper
   win_regedit:
     path: HKCU:\Control Panel\Desktop
@@ -96,7 +132,7 @@
 
 #confirmed
 - name: disable search highlights
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
     name: BingSearchEnabled
     data: 0
@@ -104,7 +140,7 @@
 
 #confirmed
 - name: disable search history
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
     name: IsDeviceSearchHistoryEnabled
     data: 0
@@ -112,7 +148,7 @@
 
 #confirmed
 - name: disable microsoft account search
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
     name: IsMSACloudSearchEnabled
     data: 0
@@ -120,7 +156,7 @@
 
 #confirmed
 - name: disable work or school account search
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
     name: IsAADCloudSearchEnabled
     data: 0
@@ -200,8 +236,89 @@
     type: dword
 
 #confirmed
+- name: disable Game DVR (policy-level)
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR
+    name: AllowGameDVR
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
+- name: disable Game Bar capture for current user
+  win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR
+    name: AppCaptureEnabled
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
+- name: disable Game Bar hotkeys
+  win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\GameBar
+    name: UseNexusForGameBarEnabled
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
+- name: disable notifications
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CurrentVersion\PushNotifications
+    name: NoToastApplicationNotification
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable optional diagnostic data (policy)
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows\DataCollection
+    name: AllowTelemetry
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable inking & typing personalization (text)
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\InputPersonalization
+    name: RestrictImplicitTextCollection
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable inking & typing personalization (ink)
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\InputPersonalization
+    name: RestrictImplicitInkCollection
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable tailored experiences (policy)
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableTailoredExperiencesWithDiagnosticData
+    data: 1
+    type: dword
+    state: present
+
+#confirmed
+- name: disable tailored experiences (user setting)
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
+    name: TailoredExperiencesWithDiagnosticDataEnabled
+    data: 0
+    type: dword
+    state: present
+
+#confirmed
 - name: delete every scheduled task
-  ansible.windows.win_shell: |
+  win_shell: |
     Get-ScheduledTask |
     ForEach-Object {
       Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath -Confirm:$false
@@ -228,3 +345,29 @@
     logon_type: service_account
     state: present
     enabled: yes
+
+- name: ensure repos directory exists
+  win_file:
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
+    state: directory
+
+- name: check if ssh key exists
+  win_stat:
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+  register: sshkey
+
+- name: generate ssh keypair
+  win_command: >
+    ssh-keygen -t ed25519
+    -f "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+    -N ""
+  when: not sshkey.stat.exists
+
+- name: read public ssh key
+  ansible.windows.slurp:
+    src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
+  register: ssh_pub
+
+- name: output public ssh key
+  debug:
+    msg: "{{ ssh_pub.content | b64decode }}"

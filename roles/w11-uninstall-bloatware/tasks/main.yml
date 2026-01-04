@@ -61,3 +61,17 @@
   loop:
     - WindowsMediaPlayer
     - Microsoft-RemoteDesktopConnection
+
+#confirmed
+- name: read HKCU run
+  ansible.windows.win_reg_stat:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
+  register: runkey
+
+#confirmed
+- name: remove edge from HKCU run
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ runkey.properties | select('match', '^MicrosoftEdge') | list }}"
