@@ -24,6 +24,24 @@
     type: dword
     state: present
 
+#confirmed - fully disable Windows Spotlight on Desktop
+- name: disable windows spotlight collection on desktop
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableSpotlightCollectionOnDesktop
+    data: 1
+    type: dword
+    state: present
+
+#confirmed - broader disable of Windows consumer experiences (prevents suggested content overrides)
+- name: disable windows consumer features
+  win_regedit:
+    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+    name: DisableWindowsConsumerFeatures
+    data: 1
+    type: dword
+    state: present
+
 #confirmed
 - name: set background type to solid color
   win_regedit:
@@ -327,3 +345,29 @@
     logon_type: service_account
     state: present
     enabled: yes
+
+- name: ensure repos directory exists
+  win_file:
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
+    state: directory
+
+- name: check if ssh key exists
+  win_stat:
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+  register: sshkey
+
+- name: generate ssh keypair
+  win_command: >
+    ssh-keygen -t ed25519
+    -f "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+    -N ""
+  when: not sshkey.stat.exists
+
+- name: read public ssh key
+  ansible.windows.slurp:
+    src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
+  register: ssh_pub
+
+- name: output public ssh key
+  debug:
+    msg: "{{ ssh_pub.content | b64decode }}"
