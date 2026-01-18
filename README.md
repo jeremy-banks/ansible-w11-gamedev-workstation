@@ -46,6 +46,8 @@ I had to do this on Mac to get the connection to Winslop working
 
 ```echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc```
 
+Otherwise the system threw error ```[ERROR]: A worker was found in a dead state```
+
 #### Update hosts
 Get the Winslop private ip and update hosts file with it
 
