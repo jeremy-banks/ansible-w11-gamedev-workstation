@@ -1,24 +1,25 @@
-# Ansible Windows 11 Home Game Development Workstation
-This repo exists to assist me in automating the installation, configuration, and security hardening of a Windows 11 Home gaming and game development PC.
+# Ansible Winslop 11 Home Game Development Workstation
+This repo exists to assist me in automating the installation, configuration, and security hardening of a Winslop 11 Home gaming and game development PC using the IaC tool known as Ansible.
 
 ## Update BIOS
 Generally speaking you should always update your motherboard BIOS when doing a new OS install. Typically this is as simple as download latest from manf website, copy to USB, reboot into BIOS, and update.
 
-## Install Windows 11 Home
+## Install Winslop 11 Home
 
 #### Create ISO
-Using a Windows OS and the Windows Media Creation Tool, create a USB bootable Windows installer.
+Using a Winslop OS and the Winslop Media Creation Tool, create a USB bootable Winslop installer.
 
 https://www.microsoft.com/en-us/software-download/windows11
 https://support.microsoft.com/en-us/windows/create-installation-media-for-windows-99a58364-8c02-206f-aa6f-40c3b507420d
 
-Also copy over any drivers needed (LAN, RAID, etc)
+Also copy over any drivers needed (LAN, RAID, etc).
 
 #### Install
-- Install Windows 11 Home
-- Activate Windows 11 Home with Key
+- Install Winslop 11 Home
+- Activate Winslop 11 Home with Key
 - Sign into Microsoft Account
 - Create new admin user to run ansible
+
 ```
 New-LocalUser -Name "NewAdmin" -Password (Read-Host -AsSecureString)
 Add-LocalGroupMember -Group "Administrators" -Member "NewAdmin"
@@ -29,6 +30,7 @@ Log into that newly created user
 Switch from Public network to Private
 
 Enable winrm
+
 ```
 Enable-PSRemoting -Force
 Set-Item WSMan:\localhost\Service\Auth\Basic $true
@@ -40,37 +42,42 @@ Log out of the user and run this playbook
 ## Run Ansible Playbook
 
 #### Localhost Config
-```sh
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-# or
-echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc
-```
+I had to do this on Mac to get the connection to Winslop working
+
+```echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc```
+
+Otherwise the system threw error ```[ERROR]: A worker was found in a dead state```
 
 #### Update hosts
-Get the windows private ip and update hosts file with it
+Get the Winslop private ip and update hosts file with it
 
 #### Remote Host Config
-```
-ansible-playbook w11.yml
-```
+Now you're ready to execute your playbook! Sit back, crack open a Mt Dew, and get ready to game.
+
+```ansible-playbook w11.yml```
 
 ## Manual Settings
-Perhaps with more time these can be identified:
+Ansible and PowerShell are indeed powerful tools for automation, but there are some limitations. Perhaps with more time these can be identified:
 
-- Uninstall NVIDIA App
-- Adjust Display
-    - Enable HDR
-    - Set Display Refresh Rate to 360
-- Task Bar customize
-    - Remove edge
-    - Remove store
-    - add firefox private
-- Configure Steam
-    - Log into Steam
-    - Install Steam games
-- Log into Unity Hub
-- Configure Ubuntu WSL2
-    - Install Git
-    - Add GitHub API key to for git to Ubuntu WSL
-    - Symlink WSL to desktop
-    - Clone repos
+- Display
+    - Uninstall NVIDIA App
+    - Adjust Display
+        - Enable HDR
+        - Set Display Refresh Rate to 360
+- Apps
+    - Configure Steam
+        - Log into Steam
+        - Install Steam games
+    - Log into Unity Hub
+    - Configure Ubuntu WSL2
+        - Create initial user
+        - Symlink Documents
+            - ```ln -s /mnt/c/Users/NewAdmin/Documents/repos ~/repos```
+        - Install Git
+        - Add GitHub API key to for git to Ubuntu WSL
+        - Clone repos
+- Winslop customizations
+    - Task Bar customize
+        - Remove edge
+        - Remove store
+        - add firefox private

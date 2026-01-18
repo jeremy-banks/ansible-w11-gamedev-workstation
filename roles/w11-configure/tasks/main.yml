@@ -346,16 +346,19 @@
     state: present
     enabled: yes
 
+#confirmed
 - name: ensure repos directory exists
   win_file:
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
     state: directory
 
+#confirmed
 - name: check if ssh key exists
   win_stat:
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
   register: sshkey
 
+#confirmed
 - name: generate ssh keypair
   win_command: >
     ssh-keygen -t ed25519
@@ -363,11 +366,18 @@
     -N ""
   when: not sshkey.stat.exists
 
+- name: ssh config
+  win_template:
+    src: files/config.j2
+    dest: C:\Users\{{ ansible_user }}\Documents\repos\config
+
+#confirmed
 - name: read public ssh key
   ansible.windows.slurp:
     src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
   register: ssh_pub
 
+#confirmed
 - name: output public ssh key
   debug:
     msg: "{{ ssh_pub.content | b64decode }}"
