@@ -7,7 +7,6 @@ software_to_install:
   - firefox
   - gimp
   - steam
-  - unity
   - unity-hub
   - vlc
   - vscode.install
