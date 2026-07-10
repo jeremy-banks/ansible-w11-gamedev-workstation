@@ -27,6 +27,10 @@
     state: latest
   register: install_wsl2 
 
+- name: rename computer
+  ansible.windows.win_hostname:
+    name: "W11HGAMING"
+
 - name: reboot
   win_reboot:
   when: install_nvidia_display_driver.changed or install_wsl2.changed

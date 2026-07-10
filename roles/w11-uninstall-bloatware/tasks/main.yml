@@ -1,17 +1,33 @@
 ---
 #confirmed
-- name: remove users
+- name: get local users
+  win_shell: Get-LocalUser | Select-Object -ExpandProperty Name
+  register: local_users
+
+- name: remove unwanted users
   win_user:
     name: "{{ item }}"
     state: absent
-  loop: "{{ users_to_remove }}"
+  loop: "{{ local_users.stdout_lines }}"
+  when:
+    - item != ansible_user
+    - item != "Administrator"
+    - item != "DefaultAccount"
+    - item != "Guest"
+    - item != "WDAGUtilityAccount"
 
 #confirmed
 - name: remove users profiles
   win_file:
     path: C:\Users\{{ item }}
     state: absent
-  loop: "{{ users_to_remove }}"
+  loop: "{{ local_users.stdout_lines }}"
+  when:
+    - item != ansible_user
+    - item != "Administrator"
+    - item != "DefaultAccount"
+    - item != "Guest"
+    - item != "WDAGUtilityAccount"
 
 #confirmed
 - name: uninstall onedrive
