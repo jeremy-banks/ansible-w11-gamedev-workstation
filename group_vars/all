@@ -5,7 +5,7 @@ software_to_install:
   - firefox
   - gimp
   - steam
-  - unity-hub
+#  - unity-hub
   - vlc
   - vscode.install
   - wsl-ubuntu-2004
