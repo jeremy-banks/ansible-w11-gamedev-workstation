@@ -1,5 +1,4 @@
 ---
-#confirmed
 - name: dark theme for system
   win_regedit:
     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
@@ -7,7 +6,6 @@
     data: 0
     type: dword
 
-#confirmed
 - name: dark theme for apps
   win_regedit:
     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
@@ -15,7 +13,6 @@
     data: 0
     type: dword
 
-#confirmed
 - name: disable windows spotlight
   win_regedit:
     path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
@@ -42,7 +39,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: set background type to solid color
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers
@@ -51,7 +47,6 @@
     type: dword
     state: present              
 
-#confirmed
 - name: disable wallpaper
   win_regedit:
     path: HKCU:\Control Panel\Desktop
@@ -60,7 +55,6 @@
     type: string
     state: present
 
-#confirmed
 - name: disable wallpaper style
   win_regedit:
     path: HKCU:\Control Panel\Desktop
@@ -69,7 +63,6 @@
     type: string
     state: present
 
-#confirmed
 - name: black desktop background
   win_regedit:
     path: HKCU:\Control Panel\Colors
@@ -78,7 +71,6 @@
     type: string
     state: present
 
-#confirmed
 - name: delete desktop items
   win_shell: |
     Remove-Item -Path "{{ item }}" -Force -Recurse
@@ -86,7 +78,7 @@
     - C:\Users\Public\Desktop\*
     - $HOME\Desktop\*
 
-#confirmed
+
 - name: hide recycle bin from desktop
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
@@ -103,7 +95,6 @@
     data: 1
     state: present
 
-#confirmed
 - name: autohide start menu
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
@@ -115,7 +106,6 @@
 # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
 # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
 
-#confirmed
 - name: disable start menu search box
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
@@ -123,14 +113,12 @@
     type: dword
     data: 0
 
-#confirmed
 - name: disable windows search service
   win_service:
     name: WSearch
     state: stopped
     start_mode: disabled
 
-#confirmed
 - name: disable search highlights
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
@@ -138,7 +126,6 @@
     data: 0
     type: dword
 
-#confirmed
 - name: disable search history
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
@@ -146,7 +133,6 @@
     data: 0
     type: dword
 
-#confirmed
 - name: disable microsoft account search
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
@@ -154,7 +140,6 @@
     data: 0
     type: dword
 
-#confirmed
 - name: disable work or school account search
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
@@ -168,7 +153,6 @@
     state: stopped
     start_mode: disabled
 
-#confirmed
 - name: turn off windows copilot
   win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
@@ -177,7 +161,6 @@
     datatype: dword
     state: present
 
-#confirmed
 - name: deny location
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
@@ -185,7 +168,6 @@
     data: Deny
     datatype: string
 
-#confirmed
 - name: disable location
   win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
@@ -194,21 +176,18 @@
     data: 1
     state: present
 
-#confirmed
 - name: disable geolocation service
   win_service:
     name: lfsvc
     state: stopped
     start_mode: disabled
 
-#confirmed
 - name: disable windows health and optimized experiences service
   win_service:
     name: whesvc
     state: stopped
     start_mode: disabled
 
-#confirmed
 - name: disable msedge services
   win_service:
     name: "{{ item }}"
@@ -219,7 +198,6 @@
     - edgeupdatem
     - MicrosoftEdgeElevationService
 
-#confirmed
 - name: disable snap windows
   win_regedit:
     path: HKCU:\Control Panel\Desktop
@@ -227,7 +205,6 @@
     data: "0"
     type: string
 
-#confirmed
 - name: disable widgets
   win_regedit:
     path: HKLM:\Software\Policies\Microsoft\Dsh
@@ -235,7 +212,6 @@
     data: 0
     type: dword
 
-#confirmed
 - name: disable Game DVR (policy-level)
   win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR
@@ -244,7 +220,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable Game Bar capture for current user
   win_regedit:
     path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR
@@ -253,7 +228,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable Game Bar hotkeys
   win_regedit:
     path: HKCU:\SOFTWARE\Microsoft\GameBar
@@ -262,7 +236,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable notifications
   win_regedit:
     path: HKCU:\Software\Policies\Microsoft\Windows\CurrentVersion\PushNotifications
@@ -271,7 +244,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable optional diagnostic data (policy)
   ansible.windows.win_regedit:
     path: HKLM:\Software\Policies\Microsoft\Windows\DataCollection
@@ -280,7 +252,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable inking & typing personalization (text)
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\InputPersonalization
@@ -289,7 +260,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable inking & typing personalization (ink)
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\InputPersonalization
@@ -298,7 +268,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable tailored experiences (policy)
   ansible.windows.win_regedit:
     path: HKLM:\Software\Policies\Microsoft\Windows\CloudContent
@@ -307,7 +276,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: disable tailored experiences (user setting)
   ansible.windows.win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
@@ -316,7 +284,6 @@
     type: dword
     state: present
 
-#confirmed
 - name: delete every scheduled task
   win_shell: |
     Get-ScheduledTask |
@@ -324,13 +291,11 @@
       Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath -Confirm:$false
     }
 
-#confirmed
 - name: copy terminate_spyware.ps1
   win_copy:
     src: files/terminate_spyware.ps1
     dest: 'C:\Windows\terminate_spyware.ps1'
 
-#confirmed
 - name: schedule terminate_spyware.ps1
   win_scheduled_task:
     name: "terminate_spyware.ps1"
@@ -346,19 +311,16 @@
     state: present
     enabled: yes
 
-#confirmed
 - name: ensure repos directory exists
   win_file:
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
     state: directory
 
-#confirmed
 - name: check if ssh key exists
   win_stat:
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
   register: sshkey
 
-#confirmed
 - name: generate ssh keypair
   win_command: >
     ssh-keygen -t ed25519
@@ -371,13 +333,11 @@
     src: files/config.j2
     dest: C:\Users\{{ ansible_user }}\Documents\repos\config
 
-#confirmed
 - name: read public ssh key
   ansible.windows.slurp:
     src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
   register: ssh_pub
 
-#confirmed
 - name: output public ssh key
   debug:
     msg: "{{ ssh_pub.content | b64decode }}"

@@ -1,31 +1,27 @@
 # Ansible Winslop 11 Home Game Development Workstation
-This repo exists to assist me in automating the installation, configuration, and security hardening of a Winslop 11 Home for gaming and game development PC using the IaC tool Ansible.
+This repo exists to assist me in automating the installation, configuration, and security hardening of a Winslop 11 Home install for gaming and game development PC using the IaC tool Ansible.
 
 ## Update BIOS
-Generally speaking you should always update your motherboard BIOS when doing a new OS install. Typically this is as simple as download latest from manf website, copy to USB, reboot into BIOS, and update.
+BIOS should ***always*** be updated when doing a new OS install. Download latest from website, copy to USB, reboot into BIOS, flash.
 
 ## Install Winslop 11 Home
 
-#### Create USB Installer
+### Create USB Installer
 - Download Rufus https://rufus.ie/en/
 - Download latest Winslop 11 ISO https://www.microsoft.com/en-us/software-download/windows11
 - Create USB Installer with default settings
 
-#### Install
+### Install and Configure
 - Install Winslop 11 Home
 - Activate Winslop 11 Home with key
-- Create initial user to complete setup
+- Click "I don't have internet" (internet access is configured at a later step)
+- Create user and password
+- Create security questions
+- Accept privacy
+
+### Configure LAN
 - Install LAN Drivers https://rog.asus.com/us/motherboards/rog-strix/rog-strix-x670e-f-gaming-wifi-model/helpdesk_download/
 
-#### Create New Admin User
-```
-New-LocalUser -Name "medes" -Password (Read-Host -AsSecureString)
-Add-LocalGroupMember -Group "Administrators" -Member "medes"
-```
-Log into that newly created user
-Accept privacy settings
-
-#### Enable Networking
 ```
 Set-NetConnectionProfile -NetworkCategory Private
 Enable-PSRemoting -Force
@@ -35,17 +31,17 @@ Set-Item WSMan:\localhost\Service\AllowUnencrypted $true
 
 ## Run Ansible Playbook
 
-#### Localhost Config
+### Localhost Config
 I had to do this on Mac to get the connection to Winslop working
 
 ```echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc```
 
 Otherwise the system threw error ```[ERROR]: A worker was found in a dead state```
 
-#### Update hosts
+### Update hosts
 Get the Winslop workstation's private ip and update hosts file with it
 
-#### Remote Host Config
+### Execute Playbook
 Now you're ready to execute your playbook! Sit back, crack open a Mt Dew, and get ready to game.
 
 ```ansible-playbook w11.yml```
