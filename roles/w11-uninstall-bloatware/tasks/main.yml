@@ -66,12 +66,12 @@
     - "MSTeams"
     - "QuickAssist"
 
-# - name: uninstall bloatware
-#   win_shell: |
-#     dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
-#   loop:
-#     - WindowsMediaPlayer
-#     - Microsoft-RemoteDesktopConnection
+- name: uninstall bloatware
+  win_shell: |
+    dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
+  loop:
+    - WindowsMediaPlayer
+    - Microsoft-RemoteDesktopConnection
 
 - name: read HKCU run
   ansible.windows.win_reg_stat:
