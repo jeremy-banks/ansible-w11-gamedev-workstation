@@ -47,21 +47,21 @@
     type: dword
     state: present              
 
-- name: disable wallpaper
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: Wallpaper
-    data: ""
-    type: string
-    state: present
+# - name: disable wallpaper
+#   win_regedit:
+#     path: HKCU:\Control Panel\Desktop
+#     name: Wallpaper
+#     data: ""
+#     type: string
+#     state: present
 
-- name: disable wallpaper style
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: WallpaperStyle
-    data: "0"
-    type: string
-    state: present
+# - name: disable wallpaper style
+#   win_regedit:
+#     path: HKCU:\Control Panel\Desktop
+#     name: WallpaperStyle
+#     data: "0"
+#     type: string
+#     state: present
 
 - name: black desktop background
   win_regedit:
@@ -70,6 +70,25 @@
     data: "0 0 0"
     type: string
     state: present
+
+- name: copy wallpaper
+  win_copy:
+    src: files/wallpaper.jpg
+    dest: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
+
+- name: set wallpaper path
+  win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: Wallpaper
+    type: string
+    data: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
+
+- name: set wallpaper style fill
+  win_regedit:
+    path: HKCU:\Control Panel\Desktop
+    name: WallpaperStyle
+    type: string
+    data: "10"
 
 - name: delete desktop items
   win_shell: |
