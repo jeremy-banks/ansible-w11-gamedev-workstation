@@ -78,6 +78,12 @@
     - C:\Users\Public\Desktop\*
     - $HOME\Desktop\*
 
+- name: hide and disable all desktop items
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    name: NoDesktop
+    type: dword
+    data: 1
 
 - name: hide recycle bin from desktop
   win_regedit:
@@ -245,7 +251,7 @@
     state: present
 
 - name: disable optional diagnostic data (policy)
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKLM:\Software\Policies\Microsoft\Windows\DataCollection
     name: AllowTelemetry
     data: 1
@@ -253,7 +259,7 @@
     state: present
 
 - name: disable inking & typing personalization (text)
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\InputPersonalization
     name: RestrictImplicitTextCollection
     data: 1
@@ -261,7 +267,7 @@
     state: present
 
 - name: disable inking & typing personalization (ink)
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\InputPersonalization
     name: RestrictImplicitInkCollection
     data: 1
@@ -269,7 +275,7 @@
     state: present
 
 - name: disable tailored experiences (policy)
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKLM:\Software\Policies\Microsoft\Windows\CloudContent
     name: DisableTailoredExperiencesWithDiagnosticData
     data: 1
@@ -277,12 +283,33 @@
     state: present
 
 - name: disable tailored experiences (user setting)
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
     name: TailoredExperiencesWithDiagnosticDataEnabled
     data: 0
     type: dword
     state: present
+
+- name: disable shared experiences
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: EnableCdp
+    type: dword
+    data: 0
+
+- name: disable windows hello for business
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork
+    name: Enabled
+    type: dword
+    data: 0
+
+- name: disable archive apps
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Appx
+    name: AllowAutomaticAppArchiving
+    type: dword
+    data: 0
 
 - name: delete every scheduled task
   win_shell: |
@@ -334,7 +361,7 @@
     dest: C:\Users\{{ ansible_user }}\Documents\repos\config
 
 - name: read public ssh key
-  ansible.windows.slurp:
+  slurp:
     src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
   register: ssh_pub
 
