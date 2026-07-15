@@ -1,19 +1,32 @@
 ---
-#confirmed
-- name: remove users
+- name: get local users
+  win_shell: Get-LocalUser | Select-Object -ExpandProperty Name
+  register: local_users
+
+- name: remove unwanted users
   win_user:
     name: "{{ item }}"
     state: absent
-  loop: "{{ users_to_remove }}"
+  loop: "{{ local_users.stdout_lines }}"
+  when:
+    - item != ansible_user
+    - item != "Administrator"
+    - item != "DefaultAccount"
+    - item != "Guest"
+    - item != "WDAGUtilityAccount"
 
-#confirmed
-- name: remove users profiles
+- name: remove unwanted users profiles
   win_file:
     path: C:\Users\{{ item }}
     state: absent
-  loop: "{{ users_to_remove }}"
+  loop: "{{ local_users.stdout_lines }}"
+  when:
+    - item != ansible_user
+    - item != "Administrator"
+    - item != "DefaultAccount"
+    - item != "Guest"
+    - item != "WDAGUtilityAccount"
 
-#confirmed
 - name: uninstall onedrive
   win_shell: cmd /c "{{ item }} /uninstall"
   loop:
@@ -21,7 +34,6 @@
     - C:\Windows\SysWOW64\OneDriveSetup.exe #64
   ignore_errors: true
 
-#confirmed
 - name: uninstall bloatware
   win_shell: |
     Get-AppxPackage *{{ item }}* | Remove-AppxPackage
@@ -54,7 +66,6 @@
     - "MSTeams"
     - "QuickAssist"
 
-#confirmed
 - name: uninstall bloatware
   win_shell: |
     dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
@@ -62,15 +73,13 @@
     - WindowsMediaPlayer
     - Microsoft-RemoteDesktopConnection
 
-#confirmed
 - name: read HKCU run
-  ansible.windows.win_reg_stat:
+  win_reg_stat:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
   register: runkey
 
-#confirmed
 - name: remove edge from HKCU run
-  ansible.windows.win_regedit:
+  win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
     name: "{{ item }}"
     state: absent

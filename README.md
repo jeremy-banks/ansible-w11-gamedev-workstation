@@ -1,57 +1,47 @@
 # Ansible Winslop 11 Home Game Development Workstation
-This repo exists to assist me in automating the installation, configuration, and security hardening of a Winslop 11 Home gaming and game development PC using the IaC tool known as Ansible.
+This repo exists to assist me in automating the installation, configuration, and security hardening of a Winslop 11 Home install for gaming and game development PC using the IaC tool Ansible.
 
 ## Update BIOS
-Generally speaking you should always update your motherboard BIOS when doing a new OS install. Typically this is as simple as download latest from manf website, copy to USB, reboot into BIOS, and update.
+BIOS should ***always*** be updated when doing a new OS install. Download latest from website, copy to USB, reboot into BIOS, flash.
 
 ## Install Winslop 11 Home
 
-#### Create ISO
-Using a Winslop OS and the Winslop Media Creation Tool, create a USB bootable Winslop installer.
+### Create USB Installer
+- Download Rufus https://rufus.ie/en/
+- Download latest Winslop 11 ISO https://www.microsoft.com/en-us/software-download/windows11
+- Create USB Installer with default settings
 
-https://www.microsoft.com/en-us/software-download/windows11
-https://support.microsoft.com/en-us/windows/create-installation-media-for-windows-99a58364-8c02-206f-aa6f-40c3b507420d
-
-Also copy over any drivers needed (LAN, RAID, etc).
-
-#### Install
+### Install and Configure
 - Install Winslop 11 Home
-- Activate Winslop 11 Home with Key
-- Sign into Microsoft Account
-- Create new admin user to run ansible
+- Activate Winslop 11 Home with key
+- Click "I don't have internet" (internet access is configured at a later step)
+- Create user and password
+- Create security questions
+- Accept privacy
+
+### Configure LAN
+- Install LAN Drivers https://rog.asus.com/us/motherboards/rog-strix/rog-strix-x670e-f-gaming-wifi-model/helpdesk_download/
 
 ```
-New-LocalUser -Name "NewAdmin" -Password (Read-Host -AsSecureString)
-Add-LocalGroupMember -Group "Administrators" -Member "NewAdmin"
-```
-
-Log into that newly created user
-
-Switch from Public network to Private
-
-Enable winrm
-
-```
+Set-NetConnectionProfile -NetworkCategory Private
 Enable-PSRemoting -Force
 Set-Item WSMan:\localhost\Service\Auth\Basic $true
 Set-Item WSMan:\localhost\Service\AllowUnencrypted $true
 ```
 
-Log out of the user and run this playbook
-
 ## Run Ansible Playbook
 
-#### Localhost Config
+### Localhost Config
 I had to do this on Mac to get the connection to Winslop working
 
 ```echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc```
 
 Otherwise the system threw error ```[ERROR]: A worker was found in a dead state```
 
-#### Update hosts
-Get the Winslop private ip and update hosts file with it
+### Update hosts
+Get the Winslop workstation's private ip and update hosts file with it
 
-#### Remote Host Config
+### Execute Playbook
 Now you're ready to execute your playbook! Sit back, crack open a Mt Dew, and get ready to game.
 
 ```ansible-playbook w11.yml```

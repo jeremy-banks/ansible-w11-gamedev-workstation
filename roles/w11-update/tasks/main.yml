@@ -1,0 +1,43 @@
+---
+- name: rename computer
+  win_hostname:
+    name: "W11HGAMING"
+  register: rename_computer
+
+- name: change power plan to high performance
+  community.windows.win_power_plan:
+    name: high performance
+  register: hp
+
+- name: windows update
+  win_updates:
+    category_names: ["*"]
+    reboot: true
+  register: windows_update
+  until: not windows_update.changed
+  delay: 30
+
+- name: nvidia display driver
+  win_chocolatey:
+    name: nvidia-display-driver
+    state: latest
+    params:
+      '/NoAudio /NoUSBC'
+  register: nvidia_display_driver
+  until: nvidia_display_driver.rc == 0
+  delay: 60
+
+- name: wsl2
+  win_chocolatey:
+    name: wsl2
+    state: latest
+  register: install_wsl2 
+
+- name: reboot
+  win_reboot:
+  when:
+    - windows_update.changed
+    - nvidia_display_driver.changed
+    - install_wsl2.changed
+    - rename_computer.changed
+    - hp.changed
