@@ -1,4 +1,16 @@
 ---
+- name: block unwanted domains
+  win_lineinfile:
+    path: C:\Windows\System32\drivers\etc\hosts
+    line: "127.0.0.1 {{ item }}"
+    state: present
+  loop: "{{ blocked_domains }}"
+  register: hosts_update
+
+- name: flush dns
+  win_command: ipconfig /flushdns
+  when: hosts_update.changed
+
 - name: dark theme for system
   win_regedit:
     path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
@@ -21,7 +33,6 @@
     type: dword
     state: present
 
-#confirmed - fully disable Windows Spotlight on Desktop
 - name: disable windows spotlight collection on desktop
   win_regedit:
     path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
@@ -30,7 +41,6 @@
     type: dword
     state: present
 
-#confirmed - broader disable of Windows consumer experiences (prevents suggested content overrides)
 - name: disable windows consumer features
   win_regedit:
     path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
@@ -46,22 +56,6 @@
     data: 1
     type: dword
     state: present              
-
-# - name: disable wallpaper
-#   win_regedit:
-#     path: HKCU:\Control Panel\Desktop
-#     name: Wallpaper
-#     data: ""
-#     type: string
-#     state: present
-
-# - name: disable wallpaper style
-#   win_regedit:
-#     path: HKCU:\Control Panel\Desktop
-#     name: WallpaperStyle
-#     data: "0"
-#     type: string
-#     state: present
 
 - name: black desktop background
   win_regedit:
