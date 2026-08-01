@@ -9,13 +9,12 @@
     name: high performance
   register: hp
 
-- name: windows update
+- name: windows updates
   win_updates:
     category_names: ["*"]
     reboot: true
-    reboot_timeout: '{{ global_delay }}'
-  until: not windows_update.changed
-  retries: 3
+  register: windows_updates
+  until: not windows_updates.changed
   delay: '{{ global_delay }}'
 
 - name: nvidia display driver
