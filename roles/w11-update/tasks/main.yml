@@ -35,9 +35,9 @@
 
 - name: reboot
   win_reboot:
-  when:
-    - windows_update.changed
-    - nvidia_display_driver.changed
-    - install_wsl2.changed
-    - rename_computer.changed
-    - hp.changed
+  when: >
+    windows_update.changed or
+    nvidia_display_driver.changed or
+    install_wsl2.changed or
+    rename_computer.changed or
+    hp.changed
