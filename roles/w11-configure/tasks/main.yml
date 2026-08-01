@@ -4,7 +4,15 @@
     path: C:\Windows\System32\drivers\etc\hosts
     line: "127.0.0.1 {{ item }}"
     state: present
-  loop: "{{ blocked_domains }}"
+  loop: >-
+    {%- set domains = [] -%}
+    {%- for d in blocked_domains -%}
+      {%- set _ = domains.append(d) -%}
+      {%- if d is match('^[^.]+\\.[^.]+$') -%}
+        {%- set _ = domains.append('www.' ~ d) -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {{ domains }}
   register: hosts_update
 
 - name: flush dns
@@ -356,26 +364,31 @@
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
     state: directory
 
+- name: ensure .ssh directory exists
+  win_file:
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh"
+    state: directory
+
 - name: check if ssh key exists
   win_stat:
-    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
   register: sshkey
 
 - name: generate ssh keypair
   win_command: >
     ssh-keygen -t ed25519
-    -f "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+    -f "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
     -N ""
   when: not sshkey.stat.exists
 
 - name: ssh config
   win_template:
     src: files/config.j2
-    dest: C:\Users\{{ ansible_user }}\Documents\repos\config
+    dest: C:\Users\{{ ansible_user }}\Documents\.ssh\config
 
 - name: read public ssh key
   slurp:
-    src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
+    src: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519.pub"
   register: ssh_pub
 
 - name: output public ssh key

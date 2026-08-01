@@ -2,7 +2,9 @@ software_to_install:
   - audacity
   - blender
   - dotnetfx
+  - epicgameslauncher
   - firefox
+  - vcredist140
   - gimp
   - steam
   - unity-hub
@@ -15,41 +17,44 @@ vcsode_extensions_to_install:
 
 blocked_domains:
   - 4chan.org
+  - 9gag.com
   - ads-twitter.com
   - adservice.google.com
   - analytics.tiktok.com
   - analytics.twitter.com
+  - bitchute.com
+  - bluesky.app
+  - bsky.app
   - connect.facebook.net
+  - discord.com
+  - discord.gg
+  - discordapp.com
   - doubleclick.net
   - facebook.com
+  - gab.com
   - google-analytics.com
   - googlesyndication.com
   - graph.facebook.com
+  - i.redd.it
   - instagram.com
   - linkedin.com
+  - mobile.twitter.com
+  - np.reddit.com
   - old.reddit.com
+  - pinterest.com
+  - redd.it
   - reddit.com
   - rumble.com
+  - snapchat.com
   - ssl.google-analytics.com
+  - t.co
   - t.me
   - telegram.org
   - tiktok.com
+  - truthsocial.com
+  - tumblr.com
+  - twimg.com
   - twitch.tv
   - twitter.com
   - whatsapp.com
-  - www.4chan.org
-  - www.doubleclick.net
-  - www.facebook.com
-  - www.google-analytics.com
-  - www.instagram.com
-  - www.linkedin.com
-  - www.reddit.com
-  - www.rumble.com
-  - www.t.me
-  - www.telegram.org
-  - www.tiktok.com
-  - www.twitch.tv
-  - www.twitter.com
-  - www.whatsapp.com
-  - www.x.com
   - x.com
