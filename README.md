@@ -44,7 +44,7 @@ Get the Winslop workstation's private ip and update hosts file with it
 ### Execute Playbook
 Now you're ready to execute your playbook! Sit back, crack open a Mt Dew, and get ready to game.
 
-```ansible-playbook w11.yml -vv```
+```ansible-playbook w11.yml -v```
 
 ## Manual Settings
 Ansible and PowerShell are indeed powerful tools for automation, but there are some limitations. Perhaps with more time these can be identified:

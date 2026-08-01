@@ -84,12 +84,3 @@
     name: "{{ item }}"
     state: absent
   loop: "{{ runkey.properties | select('match', '^MicrosoftEdge') | list }}"
-
-- name: reboot
-  debug:
-    msg: "reboot"
-  changed_when: >
-    uninstall_bloatware_appx.changed or
-    uninstall_bloatware_dism.changed or
-    remove_edge_from_HKCU_run.changed
-  notify: reboot windows

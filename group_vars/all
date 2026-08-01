@@ -8,7 +8,8 @@ software_to_install:
   - firefox
   - gimp
   - steam
-  - unity-hub
+#  - unity
+#  - unity-hub
   - vcredist140
   - vlc
   - vscode.install

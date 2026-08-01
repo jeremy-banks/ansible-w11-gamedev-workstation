@@ -2,12 +2,12 @@
 - name: rename computer
   win_hostname:
     name: "W11HGAMING"
-  register: rename_computer
+  notify: reboot windows
 
 - name: change power plan to high performance
   community.windows.win_power_plan:
     name: high performance
-  register: hp
+  notify: reboot windows
 
 - name: windows updates
   win_updates:
@@ -16,6 +16,7 @@
   register: windows_updates
   until: not windows_updates.changed
   delay: '{{ global_delay }}'
+  notify: reboot windows
 
 - name: nvidia display driver
   win_chocolatey:
@@ -26,19 +27,13 @@
   register: nvidia_display_driver
   until: nvidia_display_driver.rc == 0
   delay: '{{ global_delay }}'
+  notify: reboot windows
 
 - name: wsl2
   win_chocolatey:
     name: wsl2
     state: latest
-  register: install_wsl2 
+  notify: reboot windows
 
 - name: reboot
-  debug:
-    msg: "reboot"
-  changed_when: >
-    rename_computer.changed or
-    hp.changed or
-    nvidia_display_driver.changed or
-    install_wsl2.changed
-  notify: reboot windows
+  meta: flush_handlers
