@@ -13,7 +13,9 @@
   win_updates:
     category_names: ["*"]
     reboot: true
+    reboot_timeout: '{{ global_delay }}'
   until: not windows_update.changed
+  retries: 3
   delay: '{{ global_delay }}'
 
 - name: nvidia display driver
