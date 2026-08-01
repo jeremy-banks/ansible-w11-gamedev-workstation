@@ -5,7 +5,8 @@
     state: latest
   register: install_software
   until: install_software.rc == 0
-  delay: 60
+  delay: '{{ global_delay }}'
+  notify: reboot windows
 
 - name: configure firefox
   block:

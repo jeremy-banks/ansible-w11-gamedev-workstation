@@ -13,9 +13,8 @@
   win_updates:
     category_names: ["*"]
     reboot: true
-  register: windows_update
   until: not windows_update.changed
-  delay: 30
+  delay: '{{ global_delay }}'
 
 - name: nvidia display driver
   win_chocolatey:
@@ -25,7 +24,7 @@
       '/NoAudio /NoUSBC'
   register: nvidia_display_driver
   until: nvidia_display_driver.rc == 0
-  delay: 60
+  delay: '{{ global_delay }}'
 
 - name: wsl2
   win_chocolatey:
@@ -34,10 +33,11 @@
   register: install_wsl2 
 
 - name: reboot
-  win_reboot:
-  when: >
-    windows_update.changed or
-    nvidia_display_driver.changed or
-    install_wsl2.changed or
+  ansible.builtin.debug:
+    msg: "reboot"
+  changed_when: >
     rename_computer.changed or
-    hp.changed
+    hp.changed or
+    nvidia_display_driver.changed or
+    install_wsl2.changed
+  notify: reboot windows

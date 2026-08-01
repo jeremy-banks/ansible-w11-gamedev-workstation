@@ -34,7 +34,7 @@
     - C:\Windows\SysWOW64\OneDriveSetup.exe #64
   ignore_errors: true
 
-- name: uninstall bloatware
+- name: uninstall bloatware appx
   win_shell: |
     Get-AppxPackage *{{ item }}* | Remove-AppxPackage
   loop:
@@ -66,7 +66,7 @@
     - "MSTeams"
     - "QuickAssist"
 
-- name: uninstall bloatware
+- name: uninstall bloatware dism
   win_shell: |
     dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
   loop:
@@ -84,3 +84,12 @@
     name: "{{ item }}"
     state: absent
   loop: "{{ runkey.properties | select('match', '^MicrosoftEdge') | list }}"
+
+- name: reboot
+  ansible.builtin.debug:
+    msg: "reboot"
+  changed_when: >
+    uninstall_bloatware_appx.changed or
+    uninstall_bloatware_dism.changed or
+    remove_edge_from_HKCU_run.changed
+  notify: reboot windows

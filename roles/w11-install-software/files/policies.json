@@ -4,7 +4,6 @@
       "Default": "DuckDuckGo"
     },
     "Bookmarks": [
-      {"Title": "Grok", "URL": "https://grok.com"},
       {"Title": "ChatGPT", "URL": "https://chat.openai.com"}
     ],
     "Extensions": {

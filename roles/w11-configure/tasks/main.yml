@@ -1,396 +1,401 @@
 ---
-- name: block unwanted domains
-  win_lineinfile:
-    path: C:\Windows\System32\drivers\etc\hosts
-    line: "127.0.0.1 {{ item }}"
-    state: present
-  loop: >-
-    {%- set domains = [] -%}
-    {%- for d in blocked_domains -%}
-      {%- set _ = domains.append(d) -%}
-      {%- if d is match('^[^.]+\\.[^.]+$') -%}
-        {%- set _ = domains.append('www.' ~ d) -%}
-      {%- endif -%}
-    {%- endfor -%}
-    {{ domains }}
-  register: hosts_update
+- name: w11-configure
+  block:
 
-- name: flush dns
-  win_command: ipconfig /flushdns
-  when: hosts_update.changed
+  - name: block unwanted domains
+    win_lineinfile:
+      path: C:\Windows\System32\drivers\etc\hosts
+      line: "127.0.0.1 {{ item }}"
+      state: present
+    loop: >-
+      {%- set domains = [] -%}
+      {%- for d in blocked_domains -%}
+        {%- set _ = domains.append(d) -%}
+        {%- if d is match('^[^.]+\\.[^.]+$') -%}
+          {%- set _ = domains.append('www.' ~ d) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ domains }}
+    register: hosts_update
 
-- name: dark theme for system
-  win_regedit:
-    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
-    name: "SystemUsesLightTheme"
-    data: 0
-    type: dword
+  - name: flush dns
+    win_command: ipconfig /flushdns
+    when: hosts_update.changed
 
-- name: dark theme for apps
-  win_regedit:
-    path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
-    name: "AppsUseLightTheme"
-    data: 0
-    type: dword
+  - name: dark theme for system
+    win_regedit:
+      path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+      name: "SystemUsesLightTheme"
+      data: 0
+      type: dword
 
-- name: disable windows spotlight
-  win_regedit:
-    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
-    name: DisableSpotlightOnDesktop
-    data: 1
-    type: dword
-    state: present
+  - name: dark theme for apps
+    win_regedit:
+      path: "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+      name: "AppsUseLightTheme"
+      data: 0
+      type: dword
 
-- name: disable windows spotlight collection on desktop
-  win_regedit:
-    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
-    name: DisableSpotlightCollectionOnDesktop
-    data: 1
-    type: dword
-    state: present
+  - name: disable windows spotlight
+    win_regedit:
+      path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+      name: DisableSpotlightOnDesktop
+      data: 1
+      type: dword
+      state: present
 
-- name: disable windows consumer features
-  win_regedit:
-    path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
-    name: DisableWindowsConsumerFeatures
-    data: 1
-    type: dword
-    state: present
+  - name: disable windows spotlight collection on desktop
+    win_regedit:
+      path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+      name: DisableSpotlightCollectionOnDesktop
+      data: 1
+      type: dword
+      state: present
 
-- name: set background type to solid color
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers
-    name: BackgroundType
-    data: 1
-    type: dword
-    state: present              
+  - name: disable windows consumer features
+    win_regedit:
+      path: HKCU:\Software\Policies\Microsoft\Windows\CloudContent
+      name: DisableWindowsConsumerFeatures
+      data: 1
+      type: dword
+      state: present
 
-- name: black desktop background
-  win_regedit:
-    path: HKCU:\Control Panel\Colors
-    name: Background
-    data: "0 0 0"
-    type: string
-    state: present
+  - name: set background type to solid color
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers
+      name: BackgroundType
+      data: 1
+      type: dword
+      state: present              
 
-- name: copy wallpaper
-  win_copy:
-    src: files/wallpaper.jpg
-    dest: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
+  - name: black desktop background
+    win_regedit:
+      path: HKCU:\Control Panel\Colors
+      name: Background
+      data: "0 0 0"
+      type: string
+      state: present
 
-- name: set wallpaper path
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: Wallpaper
-    type: string
-    data: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
+  - name: copy wallpaper
+    win_copy:
+      src: files/wallpaper.jpg
+      dest: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
 
-- name: set wallpaper style fill
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: WallpaperStyle
-    type: string
-    data: "10"
+  - name: set wallpaper path
+    win_regedit:
+      path: HKCU:\Control Panel\Desktop
+      name: Wallpaper
+      type: string
+      data: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
 
-- name: delete desktop items
-  win_shell: |
-    Remove-Item -Path "{{ item }}" -Force -Recurse
-  loop:
-    - C:\Users\Public\Desktop\*
-    - $HOME\Desktop\*
+  - name: set wallpaper style fill
+    win_regedit:
+      path: HKCU:\Control Panel\Desktop
+      name: WallpaperStyle
+      type: string
+      data: "10"
 
-- name: hide and disable all desktop items
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
-    name: NoDesktop
-    type: dword
-    data: 1
+  - name: delete desktop items
+    win_shell: |
+      Remove-Item -Path "{{ item }}" -Force -Recurse
+    loop:
+      - C:\Users\Public\Desktop\*
+      - $HOME\Desktop\*
 
-- name: hide recycle bin from desktop
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
-    name: "{645FF040-5081-101B-9F08-00AA002F954E}"
-    data: 1
-    type: dword
-    state: present
+  - name: hide and disable all desktop items
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+      name: NoDesktop
+      type: dword
+      data: 1
 
-- name: hide "learn about this picture" shortcut
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
-    name: "{2cc5ca98-6485-489a-920e-b3e88a6ccce3}"
-    type: dword
-    data: 1
-    state: present
+  - name: hide recycle bin from desktop
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
+      name: "{645FF040-5081-101B-9F08-00AA002F954E}"
+      data: 1
+      type: dword
+      state: present
 
-- name: autohide start menu
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
-    name: Settings
-    type: binary
-    data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
+  - name: hide "learn about this picture" shortcut
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel
+      name: "{2cc5ca98-6485-489a-920e-b3e88a6ccce3}"
+      type: dword
+      data: 1
+      state: present
 
-# med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
-# new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
-# pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+  - name: autohide start menu
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3
+      name: Settings
+      type: binary
+      data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
 
-- name: disable start menu search box
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
-    name: SearchboxTaskbarMode
-    type: dword
-    data: 0
+  # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
+  # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
+  # pro 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000
 
-- name: disable windows search service
-  win_service:
-    name: WSearch
-    state: stopped
-    start_mode: disabled
+  - name: disable start menu search box
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+      name: SearchboxTaskbarMode
+      type: dword
+      data: 0
 
-- name: disable search highlights
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
-    name: BingSearchEnabled
-    data: 0
-    type: dword
+  - name: disable windows search service
+    win_service:
+      name: WSearch
+      state: stopped
+      start_mode: disabled
 
-- name: disable search history
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
-    name: IsDeviceSearchHistoryEnabled
-    data: 0
-    type: dword
+  - name: disable search highlights
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+      name: BingSearchEnabled
+      data: 0
+      type: dword
 
-- name: disable microsoft account search
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
-    name: IsMSACloudSearchEnabled
-    data: 0
-    type: dword
+  - name: disable search history
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
+      name: IsDeviceSearchHistoryEnabled
+      data: 0
+      type: dword
 
-- name: disable work or school account search
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
-    name: IsAADCloudSearchEnabled
-    data: 0
-    type: dword
+  - name: disable microsoft account search
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
+      name: IsMSACloudSearchEnabled
+      data: 0
+      type: dword
 
-- name: disable diagtrack
-  win_service:
-    name: DiagTrack
-    state: stopped
-    start_mode: disabled
+  - name: disable work or school account search
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings
+      name: IsAADCloudSearchEnabled
+      data: 0
+      type: dword
 
-- name: turn off windows copilot
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
-    name: TurnOffWindowsCopilot
-    data: 1
-    datatype: dword
-    state: present
+  - name: disable diagtrack
+    win_service:
+      name: DiagTrack
+      state: stopped
+      start_mode: disabled
 
-- name: deny location
-  win_regedit:
-    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
-    name: Value
-    data: Deny
-    datatype: string
+  - name: turn off windows copilot
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Copilot
+      name: TurnOffWindowsCopilot
+      data: 1
+      datatype: dword
+      state: present
 
-- name: disable location
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
-    name: DisableLocation
-    type: dword
-    data: 1
-    state: present
+  - name: deny location
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location
+      name: Value
+      data: Deny
+      datatype: string
 
-- name: disable geolocation service
-  win_service:
-    name: lfsvc
-    state: stopped
-    start_mode: disabled
+  - name: disable location
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors
+      name: DisableLocation
+      type: dword
+      data: 1
+      state: present
 
-- name: disable windows health and optimized experiences service
-  win_service:
-    name: whesvc
-    state: stopped
-    start_mode: disabled
+  - name: disable geolocation service
+    win_service:
+      name: lfsvc
+      state: stopped
+      start_mode: disabled
 
-- name: disable msedge services
-  win_service:
-    name: "{{ item }}"
-    state: stopped
-    start_mode: disabled
-  loop:
-    - edgeupdate
-    - edgeupdatem
-    - MicrosoftEdgeElevationService
+  - name: disable windows health and optimized experiences service
+    win_service:
+      name: whesvc
+      state: stopped
+      start_mode: disabled
 
-- name: disable snap windows
-  win_regedit:
-    path: HKCU:\Control Panel\Desktop
-    name: WindowArrangementActive
-    data: "0"
-    type: string
+  - name: disable msedge services
+    win_service:
+      name: "{{ item }}"
+      state: stopped
+      start_mode: disabled
+    loop:
+      - edgeupdate
+      - edgeupdatem
+      - MicrosoftEdgeElevationService
 
-- name: disable widgets
-  win_regedit:
-    path: HKLM:\Software\Policies\Microsoft\Dsh
-    name: AllowNewsAndInterests
-    data: 0
-    type: dword
+  - name: disable snap windows
+    win_regedit:
+      path: HKCU:\Control Panel\Desktop
+      name: WindowArrangementActive
+      data: "0"
+      type: string
 
-- name: disable Game DVR (policy-level)
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR
-    name: AllowGameDVR
-    data: 0
-    type: dword
-    state: present
+  - name: disable widgets
+    win_regedit:
+      path: HKLM:\Software\Policies\Microsoft\Dsh
+      name: AllowNewsAndInterests
+      data: 0
+      type: dword
 
-- name: disable Game Bar capture for current user
-  win_regedit:
-    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR
-    name: AppCaptureEnabled
-    data: 0
-    type: dword
-    state: present
+  - name: disable Game DVR (policy-level)
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR
+      name: AllowGameDVR
+      data: 0
+      type: dword
+      state: present
 
-- name: disable Game Bar hotkeys
-  win_regedit:
-    path: HKCU:\SOFTWARE\Microsoft\GameBar
-    name: UseNexusForGameBarEnabled
-    data: 0
-    type: dword
-    state: present
+  - name: disable Game Bar capture for current user
+    win_regedit:
+      path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR
+      name: AppCaptureEnabled
+      data: 0
+      type: dword
+      state: present
 
-- name: disable notifications
-  win_regedit:
-    path: HKCU:\Software\Policies\Microsoft\Windows\CurrentVersion\PushNotifications
-    name: NoToastApplicationNotification
-    data: 1
-    type: dword
-    state: present
+  - name: disable Game Bar hotkeys
+    win_regedit:
+      path: HKCU:\SOFTWARE\Microsoft\GameBar
+      name: UseNexusForGameBarEnabled
+      data: 0
+      type: dword
+      state: present
 
-- name: disable optional diagnostic data (policy)
-  win_regedit:
-    path: HKLM:\Software\Policies\Microsoft\Windows\DataCollection
-    name: AllowTelemetry
-    data: 1
-    type: dword
-    state: present
+  - name: disable notifications
+    win_regedit:
+      path: HKCU:\Software\Policies\Microsoft\Windows\CurrentVersion\PushNotifications
+      name: NoToastApplicationNotification
+      data: 1
+      type: dword
+      state: present
 
-- name: disable inking & typing personalization (text)
-  win_regedit:
-    path: HKCU:\Software\Microsoft\InputPersonalization
-    name: RestrictImplicitTextCollection
-    data: 1
-    type: dword
-    state: present
+  - name: disable optional diagnostic data (policy)
+    win_regedit:
+      path: HKLM:\Software\Policies\Microsoft\Windows\DataCollection
+      name: AllowTelemetry
+      data: 1
+      type: dword
+      state: present
 
-- name: disable inking & typing personalization (ink)
-  win_regedit:
-    path: HKCU:\Software\Microsoft\InputPersonalization
-    name: RestrictImplicitInkCollection
-    data: 1
-    type: dword
-    state: present
+  - name: disable inking & typing personalization (text)
+    win_regedit:
+      path: HKCU:\Software\Microsoft\InputPersonalization
+      name: RestrictImplicitTextCollection
+      data: 1
+      type: dword
+      state: present
 
-- name: disable tailored experiences (policy)
-  win_regedit:
-    path: HKLM:\Software\Policies\Microsoft\Windows\CloudContent
-    name: DisableTailoredExperiencesWithDiagnosticData
-    data: 1
-    type: dword
-    state: present
+  - name: disable inking & typing personalization (ink)
+    win_regedit:
+      path: HKCU:\Software\Microsoft\InputPersonalization
+      name: RestrictImplicitInkCollection
+      data: 1
+      type: dword
+      state: present
 
-- name: disable tailored experiences (user setting)
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
-    name: TailoredExperiencesWithDiagnosticDataEnabled
-    data: 0
-    type: dword
-    state: present
+  - name: disable tailored experiences (policy)
+    win_regedit:
+      path: HKLM:\Software\Policies\Microsoft\Windows\CloudContent
+      name: DisableTailoredExperiencesWithDiagnosticData
+      data: 1
+      type: dword
+      state: present
 
-- name: disable shared experiences
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
-    name: EnableCdp
-    type: dword
-    data: 0
+  - name: disable tailored experiences (user setting)
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy
+      name: TailoredExperiencesWithDiagnosticDataEnabled
+      data: 0
+      type: dword
+      state: present
 
-- name: disable windows hello for business
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork
-    name: Enabled
-    type: dword
-    data: 0
+  - name: disable shared experiences
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+      name: EnableCdp
+      type: dword
+      data: 0
 
-- name: disable archive apps
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Appx
-    name: AllowAutomaticAppArchiving
-    type: dword
-    data: 0
+  - name: disable windows hello for business
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork
+      name: Enabled
+      type: dword
+      data: 0
 
-- name: delete every scheduled task
-  win_shell: |
-    Get-ScheduledTask |
-    ForEach-Object {
-      Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath -Confirm:$false
-    }
+  - name: disable archive apps
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Appx
+      name: AllowAutomaticAppArchiving
+      type: dword
+      data: 0
 
-- name: copy terminate_spyware.ps1
-  win_copy:
-    src: files/terminate_spyware.ps1
-    dest: 'C:\Windows\terminate_spyware.ps1'
+  - name: delete every scheduled task
+    win_shell: |
+      Get-ScheduledTask |
+      ForEach-Object {
+        Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath -Confirm:$false
+      }
 
-- name: schedule terminate_spyware.ps1
-  win_scheduled_task:
-    name: "terminate_spyware.ps1"
-    description: "runs terminate_spyware.ps1 at every system startup"
-    actions:
-      - path: powershell.exe
-        arguments: "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Windows\\terminate_spyware.ps1"
-    triggers:
-      - type: logon
-    username: "SYSTEM"
-    run_level: highest
-    logon_type: service_account
-    state: present
-    enabled: yes
+  - name: copy terminate_spyware.ps1
+    win_copy:
+      src: files/terminate_spyware.ps1
+      dest: 'C:\Windows\terminate_spyware.ps1'
 
-- name: ensure repos directory exists
-  win_file:
-    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
-    state: directory
+  - name: schedule terminate_spyware.ps1
+    win_scheduled_task:
+      name: "terminate_spyware.ps1"
+      description: "runs terminate_spyware.ps1 at every system startup"
+      actions:
+        - path: powershell.exe
+          arguments: "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\Windows\\terminate_spyware.ps1"
+      triggers:
+        - type: logon
+      username: "SYSTEM"
+      run_level: highest
+      logon_type: service_account
+      state: present
+      enabled: yes
 
-- name: ensure .ssh directory exists
-  win_file:
-    path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh"
-    state: directory
+  - name: ensure repos directory exists
+    win_file:
+      path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
+      state: directory
 
-- name: check if ssh key exists
-  win_stat:
-    path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
-  register: sshkey
+  - name: ensure .ssh directory exists
+    win_file:
+      path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh"
+      state: directory
 
-- name: generate ssh keypair
-  win_command: >
-    ssh-keygen -t ed25519
-    -f "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
-    -N ""
-  when: not sshkey.stat.exists
+  - name: check if ssh key exists
+    win_stat:
+      path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
+    register: sshkey
 
-- name: ssh config
-  win_template:
-    src: files/config.j2
-    dest: C:\Users\{{ ansible_user }}\Documents\.ssh\config
+  - name: generate ssh keypair
+    win_command: >
+      ssh-keygen -t ed25519
+      -f "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
+      -N ""
+    when: not sshkey.stat.exists
 
-- name: read public ssh key
-  slurp:
-    src: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519.pub"
-  register: ssh_pub
+  - name: ssh config
+    win_template:
+      src: files/config.j2
+      dest: C:\Users\{{ ansible_user }}\Documents\.ssh\config
 
-- name: output public ssh key
-  debug:
-    msg: "{{ ssh_pub.content | b64decode }}"
+  - name: read public ssh key
+    slurp:
+      src: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519.pub"
+    register: ssh_pub
+
+  - name: output public ssh key
+    debug:
+      msg: "{{ ssh_pub.content | b64decode }}"
+
+  notify: reboot windows
