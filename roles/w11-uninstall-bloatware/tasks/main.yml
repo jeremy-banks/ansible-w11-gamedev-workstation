@@ -86,7 +86,7 @@
   loop: "{{ runkey.properties | select('match', '^MicrosoftEdge') | list }}"
 
 - name: reboot
-  ansible.builtin.debug:
+  debug:
     msg: "reboot"
   changed_when: >
     uninstall_bloatware_appx.changed or

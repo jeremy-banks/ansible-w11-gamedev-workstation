@@ -34,7 +34,7 @@
   register: install_wsl2 
 
 - name: reboot
-  ansible.builtin.debug:
+  debug:
     msg: "reboot"
   changed_when: >
     rename_computer.changed or
