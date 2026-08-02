@@ -39,11 +39,6 @@
     Get-AppxPackage *{{ item }}* | Remove-AppxPackage
   loop: "{{ bloatware_to_remove_appx }}"
 
-- name: uninstall bloatware appx provisioned
-  win_shell: |
-    Get-AppxProvisionedPackage -Online *{{ item }}* | Remove-AppxProvisionedPackage -Online
-  loop: "{{ bloatware_to_remove_appx }}"
-
 - name: uninstall bloatware dism
   win_shell: |
     dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart

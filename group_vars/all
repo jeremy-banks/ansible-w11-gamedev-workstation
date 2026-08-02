@@ -28,27 +28,8 @@ bloatware_to_remove_appx:
   - "Microsoft.ZuneMusic"
   - "MicrosoftCorporationII.MicrosoftFamily"
   - "MicrosoftWindows.CrossDevice"
-  - "MSTeams
+  - "MSTeams"
   - "QuickAssist"
-
-<!-- bloatware_to_remove_appx_provisioned:
-  - "ClipChamp.ClipChamp"
-  - "Microsoft.BingNews"
-  - "Microsoft.BingSearch"
-  - "Microsoft.BingWeather"
-  - "Microsoft.Copilot"
-  - "Microsoft.GetHelp"
-  - "Microsoft.MicrosoftSolitaireCollection"
-  - "Microsoft.MicrosoftStickyNotes"
-  - "Microsoft.OutlookForWindows"
-  - "Microsoft.Todos"
-  - "Microsoft.Windows.DevHome"
-  - "Microsoft.WindowsFeedbackHub"
-  - "Microsoft.YourPhone"
-  - "Microsoft.ZuneMusic"
-  - "MicrosoftCorporationII.MicrosoftFamily"
-  - "MicrosoftWindows.CrossDevice"
-  - "MSTeams" -->
 
 bloatware_to_remove_dism:
   - Microsoft-RemoteDesktopConnection
