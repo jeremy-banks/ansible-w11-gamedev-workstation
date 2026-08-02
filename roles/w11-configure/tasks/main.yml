@@ -4,7 +4,15 @@
     path: C:\Windows\System32\drivers\etc\hosts
     line: "127.0.0.1 {{ item }}"
     state: present
-  loop: "{{ blocked_domains }}"
+  loop: >-
+    {%- set domains = [] -%}
+    {%- for d in blocked_domains -%}
+      {%- set _ = domains.append(d) -%}
+      {%- if d is match('^[^.]+\\.[^.]+$') -%}
+        {%- set _ = domains.append('www.' ~ d) -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {{ domains }}
   register: hosts_update
 
 - name: flush dns
@@ -17,6 +25,7 @@
     name: "SystemUsesLightTheme"
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: dark theme for apps
   win_regedit:
@@ -24,6 +33,7 @@
     name: "AppsUseLightTheme"
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: disable windows spotlight
   win_regedit:
@@ -32,6 +42,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable windows spotlight collection on desktop
   win_regedit:
@@ -40,6 +51,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable windows consumer features
   win_regedit:
@@ -48,6 +60,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: set background type to solid color
   win_regedit:
@@ -55,7 +68,8 @@
     name: BackgroundType
     data: 1
     type: dword
-    state: present              
+    state: present
+  notify: reboot windows
 
 - name: black desktop background
   win_regedit:
@@ -64,6 +78,7 @@
     data: "0 0 0"
     type: string
     state: present
+  notify: reboot windows
 
 - name: copy wallpaper
   win_copy:
@@ -76,6 +91,7 @@
     name: Wallpaper
     type: string
     data: "{{ ansible_env.USERPROFILE }}\\wallpaper.jpg"
+  notify: reboot windows
 
 - name: set wallpaper style fill
   win_regedit:
@@ -83,6 +99,7 @@
     name: WallpaperStyle
     type: string
     data: "10"
+  notify: reboot windows
 
 - name: delete desktop items
   win_shell: |
@@ -97,6 +114,7 @@
     name: NoDesktop
     type: dword
     data: 1
+  notify: reboot windows
 
 - name: hide recycle bin from desktop
   win_regedit:
@@ -105,6 +123,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: hide "learn about this picture" shortcut
   win_regedit:
@@ -113,6 +132,7 @@
     type: dword
     data: 1
     state: present
+  notify: reboot windows
 
 - name: autohide start menu
   win_regedit:
@@ -120,6 +140,7 @@
     name: Settings
     type: binary
     data: "30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000001000000" #new acct
+  notify: reboot windows
 
 # med 30000000FEFFFFFF030000000300000030000000300000000000000070050000000A0000A00500006000000000000000
 # new 30000000FEFFFFFF020000000300000030000000300000000000000070050000000A0000A00500006000000001000000
@@ -131,12 +152,14 @@
     name: SearchboxTaskbarMode
     type: dword
     data: 0
+  notify: reboot windows
 
 - name: disable windows search service
   win_service:
     name: WSearch
     state: stopped
     start_mode: disabled
+  notify: reboot windows
 
 - name: disable search highlights
   win_regedit:
@@ -144,6 +167,7 @@
     name: BingSearchEnabled
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: disable search history
   win_regedit:
@@ -151,6 +175,7 @@
     name: IsDeviceSearchHistoryEnabled
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: disable microsoft account search
   win_regedit:
@@ -158,6 +183,7 @@
     name: IsMSACloudSearchEnabled
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: disable work or school account search
   win_regedit:
@@ -165,12 +191,14 @@
     name: IsAADCloudSearchEnabled
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: disable diagtrack
   win_service:
     name: DiagTrack
     state: stopped
     start_mode: disabled
+  notify: reboot windows
 
 - name: turn off windows copilot
   win_regedit:
@@ -179,6 +207,7 @@
     data: 1
     datatype: dword
     state: present
+  notify: reboot windows
 
 - name: deny location
   win_regedit:
@@ -186,6 +215,7 @@
     name: Value
     data: Deny
     datatype: string
+  notify: reboot windows
 
 - name: disable location
   win_regedit:
@@ -194,18 +224,21 @@
     type: dword
     data: 1
     state: present
+  notify: reboot windows
 
 - name: disable geolocation service
   win_service:
     name: lfsvc
     state: stopped
     start_mode: disabled
+  notify: reboot windows
 
 - name: disable windows health and optimized experiences service
   win_service:
     name: whesvc
     state: stopped
     start_mode: disabled
+  notify: reboot windows
 
 - name: disable msedge services
   win_service:
@@ -216,6 +249,7 @@
     - edgeupdate
     - edgeupdatem
     - MicrosoftEdgeElevationService
+  notify: reboot windows
 
 - name: disable snap windows
   win_regedit:
@@ -223,6 +257,7 @@
     name: WindowArrangementActive
     data: "0"
     type: string
+  notify: reboot windows
 
 - name: disable widgets
   win_regedit:
@@ -230,6 +265,7 @@
     name: AllowNewsAndInterests
     data: 0
     type: dword
+  notify: reboot windows
 
 - name: disable Game DVR (policy-level)
   win_regedit:
@@ -238,6 +274,7 @@
     data: 0
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable Game Bar capture for current user
   win_regedit:
@@ -246,6 +283,7 @@
     data: 0
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable Game Bar hotkeys
   win_regedit:
@@ -254,6 +292,7 @@
     data: 0
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable notifications
   win_regedit:
@@ -262,6 +301,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable optional diagnostic data (policy)
   win_regedit:
@@ -270,6 +310,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable inking & typing personalization (text)
   win_regedit:
@@ -278,6 +319,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable inking & typing personalization (ink)
   win_regedit:
@@ -286,6 +328,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable tailored experiences (policy)
   win_regedit:
@@ -294,6 +337,7 @@
     data: 1
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable tailored experiences (user setting)
   win_regedit:
@@ -302,6 +346,7 @@
     data: 0
     type: dword
     state: present
+  notify: reboot windows
 
 - name: disable shared experiences
   win_regedit:
@@ -309,6 +354,7 @@
     name: EnableCdp
     type: dword
     data: 0
+  notify: reboot windows
 
 - name: disable windows hello for business
   win_regedit:
@@ -316,6 +362,7 @@
     name: Enabled
     type: dword
     data: 0
+  notify: reboot windows
 
 - name: disable archive apps
   win_regedit:
@@ -323,6 +370,55 @@
     name: AllowAutomaticAppArchiving
     type: dword
     data: 0
+  notify: reboot windows
+
+- name: disable cross device experience policy
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: EnableCdp
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable cross device clipboard/resume
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: EnableActivityFeed
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable publish user activities
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: PublishUserActivities
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable upload user activities
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: UploadUserActivities
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable connected devices platform service
+  ansible.windows.win_service:
+    name: CDPSvc
+    start_mode: disabled
+    state: stopped
+  ignore_errors: true
+
+- name: disable connected devices platform user service
+  ansible.windows.win_shell: |
+    Get-Service CDPUserSvc* |
+      Set-Service -StartupType Disabled
+
+    Get-Service CDPUserSvc* |
+      Stop-Service -Force
+  ignore_errors: true
 
 - name: delete every scheduled task
   win_shell: |
@@ -356,28 +452,36 @@
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos"
     state: directory
 
+- name: ensure .ssh directory exists
+  win_file:
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh"
+    state: directory
+
 - name: check if ssh key exists
   win_stat:
-    path: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+    path: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
   register: sshkey
 
 - name: generate ssh keypair
   win_command: >
     ssh-keygen -t ed25519
-    -f "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519"
+    -f "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519"
     -N ""
   when: not sshkey.stat.exists
 
 - name: ssh config
   win_template:
     src: files/config.j2
-    dest: C:\Users\{{ ansible_user }}\Documents\repos\config
+    dest: C:\Users\{{ ansible_user }}\Documents\.ssh\config
 
 - name: read public ssh key
   slurp:
-    src: "{{ ansible_env.USERPROFILE }}\\Documents\\repos\\id_ssh_ed25519.pub"
+    src: "{{ ansible_env.USERPROFILE }}\\Documents\\.ssh\\id_ssh_ed25519.pub"
   register: ssh_pub
 
 - name: output public ssh key
   debug:
     msg: "{{ ssh_pub.content | b64decode }}"
+
+- name: reboot
+  meta: flush_handlers

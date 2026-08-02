@@ -1,11 +1,51 @@
+global_delay: 60
+
+bloatware_to_remove_appx:
+  - "Clipchamp.Clipchamp"
+  - "Microsoft.BingNews"
+  - "Microsoft.BingSearch"
+  - "Microsoft.BingWeather"
+  - "Microsoft.Copilot"
+  - "Microsoft.Edge.GameAssist"
+  - "Microsoft.GamingApp"
+  - "Microsoft.GetHelp"
+  - "Microsoft.MicrosoftSolitaireCollection"
+  - "Microsoft.MicrosoftStickyNotes"
+  - "Microsoft.OutlookForWindows"
+  - "Microsoft.PowerAutomateDesktop"
+  - "Microsoft.StickyNotes"
+  - "Microsoft.Todos"
+  - "Microsoft.WidgetsPlatformRuntime"
+  - "Microsoft.Windows.DevHome"
+  - "Microsoft.WindowsCamera"
+  - "Microsoft.WindowsFeedbackHub"
+  - "Microsoft.WindowsSoundRecorder"
+  - "Microsoft.Xbox.TCUI"
+  - "Microsoft.XboxGamingOverlay"
+  - "Microsoft.XboxIdentityProvider"
+  - "Microsoft.XboxSpeechToTextOverlay"
+  - "Microsoft.YourPhone"
+  - "Microsoft.ZuneMusic"
+  - "MicrosoftCorporationII.MicrosoftFamily"
+  - "MicrosoftWindows.CrossDevice"
+  - "MSTeams"
+  - "QuickAssist"
+
+bloatware_to_remove_dism:
+  - Microsoft-RemoteDesktopConnection
+  - WindowsMediaPlayer
+
 software_to_install:
   - audacity
   - blender
   - dotnetfx
+  - epicgameslauncher
   - firefox
   - gimp
   - steam
-  - unity-hub
+#  - unity
+#  - unity-hub
+  - vcredist140
   - vlc
   - vscode.install
   - wsl-ubuntu-2004
@@ -15,41 +55,44 @@ vcsode_extensions_to_install:
 
 blocked_domains:
   - 4chan.org
+  - 9gag.com
   - ads-twitter.com
   - adservice.google.com
   - analytics.tiktok.com
   - analytics.twitter.com
+  - bitchute.com
+  - bluesky.app
+  - bsky.app
   - connect.facebook.net
+  - discord.com
+  - discord.gg
+  - discordapp.com
   - doubleclick.net
   - facebook.com
+  - gab.com
   - google-analytics.com
   - googlesyndication.com
   - graph.facebook.com
+  - i.redd.it
   - instagram.com
   - linkedin.com
+  - mobile.twitter.com
+  - np.reddit.com
   - old.reddit.com
+  - pinterest.com
+  - redd.it
   - reddit.com
   - rumble.com
+  - snapchat.com
   - ssl.google-analytics.com
+  - t.co
   - t.me
   - telegram.org
   - tiktok.com
+  - truthsocial.com
+  - tumblr.com
+  - twimg.com
   - twitch.tv
   - twitter.com
   - whatsapp.com
-  - www.4chan.org
-  - www.doubleclick.net
-  - www.facebook.com
-  - www.google-analytics.com
-  - www.instagram.com
-  - www.linkedin.com
-  - www.reddit.com
-  - www.rumble.com
-  - www.t.me
-  - www.telegram.org
-  - www.tiktok.com
-  - www.twitch.tv
-  - www.twitter.com
-  - www.whatsapp.com
-  - www.x.com
   - x.com

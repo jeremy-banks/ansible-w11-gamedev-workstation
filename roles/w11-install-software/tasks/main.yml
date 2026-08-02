@@ -1,11 +1,13 @@
 ---
 - name: install software
   win_chocolatey:
+    bootstrap_tls_version: ["tls13"]
     name: "{{ software_to_install }}"
     state: latest
   register: install_software
   until: install_software.rc == 0
-  delay: 60
+  delay: '{{ global_delay }}'
+  notify: reboot windows
 
 - name: configure firefox
   block:
@@ -25,3 +27,6 @@
   win_command: >
     "C:\Program Files\Microsoft VS Code\bin\code.cmd" --install-extension {{ item }} --force
   loop: "{{ vcsode_extensions_to_install }}"
+
+- name: reboot
+  meta: flush_handlers

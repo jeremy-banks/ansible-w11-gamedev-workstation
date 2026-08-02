@@ -2,6 +2,7 @@
 - hosts: all
   roles:
     # - w11-test-connectivity #only needed for troubleshooting
+    - common
     - w11-update
     - w11-uninstall-bloatware
     - w11-install-software

@@ -44,7 +44,7 @@ Get the Winslop workstation's private ip and update hosts file with it
 ### Execute Playbook
 Now you're ready to execute your playbook! Sit back, crack open a Mt Dew, and get ready to game.
 
-```ansible-playbook w11.yml```
+```ansible-playbook w11.yml -vv```
 
 ## Manual Settings
 Ansible and PowerShell are indeed powerful tools for automation, but there are some limitations. Perhaps with more time these can be identified:
@@ -59,15 +59,23 @@ Ansible and PowerShell are indeed powerful tools for automation, but there are s
         - Log into Steam
         - Install Steam games
     - Log into Unity Hub
+    - Log into Epic Launcher
     - Configure Ubuntu WSL2
         - Create initial user
-        - Symlink Documents
-            - ```ln -s /mnt/c/Users/NewAdmin/Documents/repos ~/repos```
-        - Install Git
+        - Symlink repos `ln -s /mnt/c/Users/NewAdmin/Documents/repos ~/repos`
+        - Symlink .ssh
+            - `rm -rf ~/.ssh`
+            - `ln -s /mnt/c/Users/NewAdmin/Documents/.ssh ~/.ssh`
+        - Install Git `sudo apt update && sudo apt install git`
+        - Configure Git
+            - `git config --global user.name "Jeremy Banks"`
+            - `git config --global user.email "jeremybankstech@gmail.com"`
+            - `git config --global init.defaultBranch main`
         - Add GitHub API key to for git to Ubuntu WSL
         - Clone repos
+
 - Winslop customizations
     - Task Bar customize
         - Remove edge
         - Remove store
-        - add firefox private
+        - Add firefox private
