@@ -59,7 +59,7 @@ Ansible and PowerShell are indeed powerful tools for automation, but there are s
         - Log into Steam
         - Install Steam games
     - Log into Unity Hub
-    - Log into Unreal Launcher
+    - Log into Epic Launcher
     - Configure Ubuntu WSL2
         - Create initial user
         - Symlink repos `ln -s /mnt/c/Users/NewAdmin/Documents/repos ~/repos`
@@ -78,4 +78,4 @@ Ansible and PowerShell are indeed powerful tools for automation, but there are s
     - Task Bar customize
         - Remove edge
         - Remove store
-        - add firefox private
+        - Add firefox private

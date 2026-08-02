@@ -30,8 +30,8 @@
       ]
     },
     "ExtensionSettings": {
-      "ublock-origin@raymondhill.net": {
-        "private_browsing": "true"
+      "uBlock0@raymondhill.net": {
+        "private_browsing": true
       },
       "jid1-MnnxcxisBPnSXQ@jetpack": {
         "private_browsing": "true"
