@@ -3,10 +3,19 @@
   win_chocolatey:
     bootstrap_tls_version: ["tls13"]
     name: "{{ software_to_install }}"
-    state: latest
+    # state: latest
+    # force: true
   register: install_software
   until: install_software.rc == 0
   delay: '{{ global_delay }}'
+  notify: reboot windows
+
+- name: enable linux metadata support for wsl and restart it
+  win_shell: |
+    wsl -d Ubuntu -- sh -c "mkdir -p /etc && cat >/etc/wsl.conf <<'EOF'
+    [automount]
+    options = metadata
+    EOF"
   notify: reboot windows
 
 - name: configure firefox
