@@ -37,41 +37,17 @@
 - name: uninstall bloatware appx
   win_shell: |
     Get-AppxPackage *{{ item }}* | Remove-AppxPackage
-  loop:
-    - "Clipchamp.Clipchamp"
-    - "Microsoft.BingNews"
-    - "Microsoft.BingSearch"
-    - "Microsoft.BingWeather"
-    - "Microsoft.Copilot"
-    - "Microsoft.Edge.GameAssist"
-    - "Microsoft.GamingApp"
-    - "Microsoft.GetHelp"
-    - "Microsoft.MicrosoftSolitaireCollection"
-    - "Microsoft.MicrosoftStickyNotes"
-    - "Microsoft.OutlookForWindows"
-    - "Microsoft.PowerAutomateDesktop"
-    - "Microsoft.StickyNotes"
-    - "Microsoft.Todos"
-    - "Microsoft.WidgetsPlatformRuntime"
-    - "Microsoft.WindowsCamera"
-    - "Microsoft.WindowsFeedbackHub"
-    - "Microsoft.WindowsSoundRecorder"
-    - "Microsoft.Xbox.TCUI"
-    - "Microsoft.XboxGamingOverlay"
-    - "Microsoft.XboxIdentityProvider"
-    - "Microsoft.XboxSpeechToTextOverlay"
-    - "Microsoft.YourPhone"
-    - "Microsoft.ZuneMusic"
-    - "MicrosoftWindows.CrossDevice"
-    - "MSTeams"
-    - "QuickAssist"
+  loop: "{{ bloatware_to_remove_appx }}"
+
+- name: uninstall bloatware appx provisioned
+  win_shell: |
+    Get-AppxProvisionedPackage -Online *{{ item }}* | Remove-AppxProvisionedPackage -Online
+  loop: "{{ bloatware_to_remove_appx }}"
 
 - name: uninstall bloatware dism
   win_shell: |
     dism /Online /Disable-Feature /FeatureName:{{ item }} /NoRestart
-  loop:
-    - WindowsMediaPlayer
-    - Microsoft-RemoteDesktopConnection
+  loop: "{{ bloatware_to_remove_dism }}"
 
 - name: read HKCU run
   win_reg_stat:

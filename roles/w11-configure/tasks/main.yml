@@ -68,7 +68,7 @@
     name: BackgroundType
     data: 1
     type: dword
-    state: present              
+    state: present
   notify: reboot windows
 
 - name: black desktop background
@@ -371,6 +371,54 @@
     type: dword
     data: 0
   notify: reboot windows
+
+- name: disable cross device experience policy
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: EnableCdp
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable cross device clipboard/resume
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: EnableActivityFeed
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable publish user activities
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: PublishUserActivities
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable upload user activities
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\System
+    name: UploadUserActivities
+    type: dword
+    data: 0
+  notify: reboot windows
+
+- name: disable connected devices platform service
+  ansible.windows.win_service:
+    name: CDPSvc
+    start_mode: disabled
+    state: stopped
+  ignore_errors: true
+
+- name: disable connected devices platform user service
+  ansible.windows.win_shell: |
+    Get-Service CDPUserSvc* |
+      Set-Service -StartupType Disabled
+
+    Get-Service CDPUserSvc* |
+      Stop-Service -Force
+  ignore_errors: true
 
 - name: delete every scheduled task
   win_shell: |

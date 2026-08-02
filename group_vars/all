@@ -1,5 +1,59 @@
 global_delay: 60
 
+bloatware_to_remove_appx:
+  - "Clipchamp.Clipchamp"
+  - "Microsoft.BingNews"
+  - "Microsoft.BingSearch"
+  - "Microsoft.BingWeather"
+  - "Microsoft.Copilot"
+  - "Microsoft.Edge.GameAssist"
+  - "Microsoft.GamingApp"
+  - "Microsoft.GetHelp"
+  - "Microsoft.MicrosoftSolitaireCollection"
+  - "Microsoft.MicrosoftStickyNotes"
+  - "Microsoft.OutlookForWindows"
+  - "Microsoft.PowerAutomateDesktop"
+  - "Microsoft.StickyNotes"
+  - "Microsoft.Todos"
+  - "Microsoft.WidgetsPlatformRuntime"
+  - "Microsoft.Windows.DevHome"
+  - "Microsoft.WindowsCamera"
+  - "Microsoft.WindowsFeedbackHub"
+  - "Microsoft.WindowsSoundRecorder"
+  - "Microsoft.Xbox.TCUI"
+  - "Microsoft.XboxGamingOverlay"
+  - "Microsoft.XboxIdentityProvider"
+  - "Microsoft.XboxSpeechToTextOverlay"
+  - "Microsoft.YourPhone"
+  - "Microsoft.ZuneMusic"
+  - "MicrosoftCorporationII.MicrosoftFamily"
+  - "MicrosoftWindows.CrossDevice"
+  - "MSTeams
+  - "QuickAssist"
+
+<!-- bloatware_to_remove_appx_provisioned:
+  - "ClipChamp.ClipChamp"
+  - "Microsoft.BingNews"
+  - "Microsoft.BingSearch"
+  - "Microsoft.BingWeather"
+  - "Microsoft.Copilot"
+  - "Microsoft.GetHelp"
+  - "Microsoft.MicrosoftSolitaireCollection"
+  - "Microsoft.MicrosoftStickyNotes"
+  - "Microsoft.OutlookForWindows"
+  - "Microsoft.Todos"
+  - "Microsoft.Windows.DevHome"
+  - "Microsoft.WindowsFeedbackHub"
+  - "Microsoft.YourPhone"
+  - "Microsoft.ZuneMusic"
+  - "MicrosoftCorporationII.MicrosoftFamily"
+  - "MicrosoftWindows.CrossDevice"
+  - "MSTeams" -->
+
+bloatware_to_remove_dism:
+  - Microsoft-RemoteDesktopConnection
+  - WindowsMediaPlayer
+
 software_to_install:
   - audacity
   - blender
